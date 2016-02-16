@@ -12,7 +12,23 @@ var Facebook = require('./Facebook.js');
 var CheckinStorage = require('./CheckinStorage.js');
 var UserStorage = require('./UserStorage.js');
 var VenueStorage = require('./VenueStorage.js');
+var ejs = require('ejs');
 var app = express();
+
+app.use('/electron/bower_components', express.static(__dirname + '/electron/bower_components'));
+app.use('/electron/scripts', express.static(__dirname + '/electron/scripts'));
+app.use('/electron/styles', express.static(__dirname + '/electron/styles'));
+app.use('/electron/views', express.static(__dirname + '/electron/views'));
+
+app.set('views', __dirname);
+app.engine('.html', ejs.__express);
+app.set('view engine', 'ejs');
+
+app.get('/electron', function (request, response, next) {
+
+    response.render('electron/index.html');
+
+});
 
 var swagger = swagger_node_express.createNew(app);
 
@@ -22,9 +38,7 @@ const environment = process.env.NODE_ENV;
 
 let mongouri;
 
-console.log(process.env);
-
-if (environment === "development") {
+if ("development" === environment) {
 
     mongouri = process.env.COCAFES_MONGO_PRODUCTION_URI;
     //mongouri = "mongodb://localhost:27017/cocafes"; //mongod --dbpath ~/mongodb/cocafes/
