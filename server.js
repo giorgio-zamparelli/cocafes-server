@@ -18,8 +18,24 @@ var swagger = swagger_node_express.createNew(app);
 
 var facebook = new Facebook("1707859876137335", "https://www.facebook.com/connect/login_success.html", "bfc74d90801f5ca51febb8c47d4f146b");
 
-var database = mongojs('mongodb://heroku_cpslwj5x:osv1hu4kictp62jrnoepc116gh@ds059115.mongolab.com:59115/heroku_cpslwj5x');
-//var database = mongojs('mongodb://localhost:27017/cocafes'); //mongod --dbpath ~/mongodb/cocafes/
+const environment = process.env.NODE_ENV;
+
+let mongouri;
+
+console.log(process.env);
+
+if (environment === "development") {
+
+    mongouri = process.env.COCAFES_MONGO_PRODUCTION_URI;
+    //mongouri = "mongodb://localhost:27017/cocafes"; //mongod --dbpath ~/mongodb/cocafes/
+
+} else {
+
+    mongouri = process.env.COCAFES_MONGO_PRODUCTION_URI;
+
+}
+
+const database = mongojs(mongouri);
 
 var checkinStorage = new CheckinStorage(database);
 var userStorage = new UserStorage(database);
