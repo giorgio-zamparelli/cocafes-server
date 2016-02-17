@@ -34,27 +34,29 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
     var showFacebookAuthenticationPopup = function () {
 
-        var facebookWindow = $window.open(  'https://www.facebook.com/dialog/oauth?client_id=1707859876137335&scope=email,public_profile,user_friends&redirect_uri=https://cocafes.herokuapp.com/facebook_login_success.html',
-                                            "",
-                                            ""
+        //var redirect_uri = "https://cocafes.herokuapp.com/facebook_login_success.html";
+        var redirect_uri = "http://localhost/facebook_login_success.html";
+
+        var facebookWindow = $window.open(  'https://www.facebook.com/dialog/oauth?client_id=1707859876137335&scope=email,public_profile,user_friends&redirect_uri=' + redirect_uri,
+                                            "Login with Facebook",
+                                            "width=1000, height=670"
                                         );
 
         facebookWindow.focus();
 
-        //new BrowserWindow({ "width": 1000, "height": 670, "show": false, "node-integration": false });
-
-
     };
 
-    $window.onFacebookLoginSuccess = function (url) {
+    $window.onFacebookLoginSuccess = function (facebookWindow) {
 
+        var url = facebookWindow.location.href;
         var raw_code = /code=([^&]*)/.exec(url) || null;
         var code = (raw_code && raw_code.length > 1) ? raw_code[1] : null;
         var error = /\?error=(.+)$/.exec(url);
 
         if (code || error) {
-            // Close the browser if code found or error
-            facebookWindow.destroy();
+
+            $window.focus();
+
         }
 
         // If there is a code, proceed to get token from github

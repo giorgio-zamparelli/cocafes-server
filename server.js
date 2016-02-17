@@ -24,6 +24,15 @@ app.set('views', __dirname);
 app.engine('.html', ejs.__express);
 app.set('view engine', 'ejs');
 
+app.all('*', function(request, response, next) {
+
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+    response.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+
+});
+
 app.get('/electron', function (request, response, next) {
 
     response.render('electron/index.html');

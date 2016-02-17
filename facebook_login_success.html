@@ -5,9 +5,12 @@
 </head>
 <body>
 
+    <p>Success</p>
+
     <script>
 
-        window.opener.onFacebookLoginSuccess(window.location.href);
+        window.opener.onFacebookLoginSuccess(window);
+        window.close();
 
     </script>
 
