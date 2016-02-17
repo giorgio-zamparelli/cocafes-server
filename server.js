@@ -15,6 +15,11 @@ var VenueStorage = require('./VenueStorage.js');
 var ejs = require('ejs');
 var app = express();
 
+const environment = process.env.NODE_ENV;
+const host = "development" === environment ? "localhost" : "cocafes.herokuapp.com";
+const port = "development" === environment ? 80 : 443;
+const address = (port === 443 ? "https://" : "http://") + host + (port === 80 || port === 443 ? "" : ":" + port);
+
 app.use('/electron/bower_components', express.static(__dirname + '/electron/bower_components'));
 app.use('/electron/scripts', express.static(__dirname + '/electron/scripts'));
 app.use('/electron/styles', express.static(__dirname + '/electron/styles'));
@@ -49,9 +54,9 @@ app.get('/facebook_login_success.html', function (request, response, next) {
 
 var swagger = swagger_node_express.createNew(app);
 
-var facebook = new Facebook("1707859876137335", "https://www.facebook.com/connect/login_success.html", "bfc74d90801f5ca51febb8c47d4f146b");
+var facebook = new Facebook("1707859876137335", address + "/facebook_login_success.html", "bfc74d90801f5ca51febb8c47d4f146b");
 
-const environment = process.env.NODE_ENV;
+
 
 let mongouri;
 
@@ -87,58 +92,70 @@ swagger.addPost({
     'action': function(request, response, next) {
 
         var facebookCode = request.headers.authorization.replace("Facebook ", "");
+
         facebook.getAccessToken(facebookCode).subscribe(function(accessTokenResponse) {
 
-            //console.log(response);
             facebook.access_token = accessTokenResponse.access_token;
 
-            facebook.getUserProfile().subscribe(function(facebookUser) {
+            if (facebook.access_token) {
 
-                //console.log(facebookUser);
+                facebook.getUserProfile().subscribe(function(facebookUser) {
 
-                userStorage.getUserByFacebookId(facebookUser.id, function(user) {
+                    if (facebookUser) {
 
-                    if (user) {
+                        userStorage.getUserByFacebookId(facebookUser.id, function(user) {
 
-                        response.json(user);
+                            if (user) {
 
-                    } else {
+                                response.json(user);
 
-                        user = {};
-                        user.facebookId = facebookUser.id;
-                        user.facebookToken = facebook.access_token;
-                        user.firstname = facebookUser.first_name;
-                        user.lastname = facebookUser.last_name;
+                            } else {
 
-                        if (facebookUser.picture && facebookUser.picture.data && facebookUser.picture.data.url) {
-                            user.picture = facebookUser.picture.data.url;
-                        }
+                                user = {};
+                                user.facebookId = facebookUser.id;
+                                user.facebookToken = facebook.access_token;
+                                user.firstname = facebookUser.first_name;
+                                user.lastname = facebookUser.last_name;
 
-                        user.friendsIds = {};
-
-                        if (facebookUser.friends && facebookUser.friends.data) {
-
-                            for (let facebookFriend of facebookUser.friends.data) {
-
-                                if (facebookFriend && facebookFriend.id && facebookFriend.id.length > 0) {
-                                    user.friendsIds[facebookFriend.id] = true;
+                                if (facebookUser.picture && facebookUser.picture.data && facebookUser.picture.data.url) {
+                                    user.picture = facebookUser.picture.data.url;
                                 }
+
+                                user.friendsIds = {};
+
+                                if (facebookUser.friends && facebookUser.friends.data) {
+
+                                    for (let facebookFriend of facebookUser.friends.data) {
+
+                                        if (facebookFriend && facebookFriend.id && facebookFriend.id.length > 0) {
+                                            user.friendsIds[facebookFriend.id] = true;
+                                        }
+
+                                    }
+
+                                }
+
+                                userStorage.addUser(user, function(user) {
+
+                                    response.json(user);
+
+                                });
 
                             }
 
-                        }
-
-                        userStorage.addUser(user, function(user) {
-
-                            response.json(user);
-
                         });
+
+                    } else {
+
+                        response.status(404).send({ "error" : "Could not retrieve facebook user"});
 
                     }
 
                 });
 
-            });
+            } else {
+                response.status(500).send({ "error" : "Could not fetch facebook access token"});
+            }
 
         });
 

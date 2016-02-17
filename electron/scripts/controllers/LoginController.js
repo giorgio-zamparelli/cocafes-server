@@ -34,8 +34,7 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
     var showFacebookAuthenticationPopup = function () {
 
-        //var redirect_uri = "https://cocafes.herokuapp.com/facebook_login_success.html";
-        var redirect_uri = "http://localhost/facebook_login_success.html";
+        var redirect_uri = $window.location.origin + "/facebook_login_success.html";
 
         var facebookWindow = $window.open(  'https://www.facebook.com/dialog/oauth?client_id=1707859876137335&scope=email,public_profile,user_friends&redirect_uri=' + redirect_uri,
                                             "Login with Facebook",

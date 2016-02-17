@@ -4,8 +4,15 @@ app.service('Api', [ '$http', function($http){
 
 	'use strict';
 
-	const host = "cocafes.herokuapp.com"; //require('electron').remote.getGlobal("host");
-	const port = 443; //require('electron').remote.getGlobal("port");
+	var host = "cocafes.herokuapp.com"; //require('electron').remote.getGlobal("host");
+	var port = 443; //require('electron').remote.getGlobal("port");
+
+	if ($window.location.host === "localhost") {
+
+		// var host = "localhost"; //require('electron').remote.getGlobal("host");
+		// var port = 80; //require('electron').remote.getGlobal("port");
+
+	}
 
 	const baseUrl = (port === 443 ? "https://" : "http://") + host + ":" + port + "/api/v1";
 
