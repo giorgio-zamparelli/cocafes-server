@@ -9,8 +9,20 @@
 
     <script>
 
-        window.opener.onFacebookLoginSuccess(window);
-        window.close();
+        document.addEventListener("DOMContentLoaded", function () {
+
+            if (typeof window.opener !== "undefined") {
+
+                console.log("window.opener is undefined");
+
+            } else {
+
+                window.opener.onFacebookLoginSuccess(window.location.href);
+                window.close();
+
+            }
+
+        });
 
     </script>
 

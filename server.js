@@ -101,6 +101,8 @@ swagger.addPost({
 
                 facebook.getUserProfile().subscribe(function(facebookUser) {
 
+                    //console.log(facebookUser);
+
                     if (facebookUser) {
 
                         userStorage.getUserByFacebookId(facebookUser.id, function(user) {

@@ -1,16 +1,18 @@
 //MONGOLAB_URI: mongodb://heroku_cpslwj5x:osv1hu4kictp62jrnoepc116gh@ds059115.mongolab.com:59115/heroku_cpslwj5x
 
-app.service('Api', [ '$http', function($http){
+app.service('Api', [ '$http', '$window', function($http, $window){
 
 	'use strict';
 
-	var host = "cocafes.herokuapp.com"; //require('electron').remote.getGlobal("host");
-	var port = 443; //require('electron').remote.getGlobal("port");
-
 	if ($window.location.host === "localhost") {
 
-		// var host = "localhost"; //require('electron').remote.getGlobal("host");
-		// var port = 80; //require('electron').remote.getGlobal("port");
+		var host = "localhost"; //require('electron').remote.getGlobal("host");
+		var port = 80; //require('electron').remote.getGlobal("port");
+
+	} else {
+
+		var host = "cocafes.herokuapp.com"; //require('electron').remote.getGlobal("host");
+		var port = 443; //require('electron').remote.getGlobal("port");
 
 	}
 
