@@ -30,6 +30,12 @@ app.get('/electron', function (request, response, next) {
 
 });
 
+app.get('/facebook_login_success.html', function (request, response, next) {
+
+    response.render('facebook_login_success.html');
+
+});
+
 var swagger = swagger_node_express.createNew(app);
 
 var facebook = new Facebook("1707859876137335", "https://www.facebook.com/connect/login_success.html", "bfc74d90801f5ca51febb8c47d4f146b");
