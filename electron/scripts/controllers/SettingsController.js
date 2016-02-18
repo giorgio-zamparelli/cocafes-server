@@ -17,4 +17,16 @@ app.controller('SettingsController', [ '$rootScope', '$scope', '$location', 'Api
 
     };
 
+    if (typeof require !== "undefined") {
+
+        $scope.version = require('electron').remote.getGlobal("version");
+
+        $scope.quit = function () {
+
+            require('electron').remote.getGlobal("app").quit();
+
+        };
+
+    }
+
 }]);
