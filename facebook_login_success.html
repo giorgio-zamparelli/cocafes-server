@@ -13,12 +13,14 @@
 
             if (typeof window.opener !== "undefined") {
 
-                console.log("window.opener is undefined");
+                window.opener.onFacebookLoginSuccess(window.location.href);
+                window.close();
+
+
 
             } else {
 
-                window.opener.onFacebookLoginSuccess(window.location.href);
-                window.close();
+                console.log("window.opener is undefined");
 
             }
 
