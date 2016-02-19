@@ -61,14 +61,14 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
             facebookWindow.webContents.on('will-navigate', function (event, url) {
 
-                console.log("facebookWindow on will-navigate event");
+                //console.log("facebookWindow on will-navigate event");
                 $window.onFacebookLoginSuccess(url, facebookWindow);
 
             });
 
             facebookWindow.webContents.on('did-get-redirect-request', function (event, oldUrl, newUrl) {
 
-                console.log("facebookWindow on did-get-redirect-request event");
+                //console.log("facebookWindow on did-get-redirect-request event");
                 $window.onFacebookLoginSuccess(newUrl, facebookWindow);
 
             });

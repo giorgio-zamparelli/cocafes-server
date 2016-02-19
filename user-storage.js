@@ -54,18 +54,32 @@ UserStorage.prototype.getUsersByFacebookIds = function (usersFacebookIds) {
 
 };
 
-UserStorage.prototype.addUser = function (user, success) {
+UserStorage.prototype.addOrUpdateUser = function (user, success) {
 
     if (!user._id) {
         user._id = UUID.generate();
     }
 
-    this.collection.insert(user, function(error, user) {
-
+    this.collection.update({_id: user._id}, {$set : user}, {upsert: true}, function(error, result) {
+        
         if (error) throw error;
 
         if (success) {
             success(user);
+        }
+
+    });
+
+};
+
+UserStorage.prototype.contains = function (userId, success) {
+
+    this.collection.find({"_id": userId}, {_id: 1}).limit(1, function(error, user) {
+
+        if (error) throw error;
+
+        if (success) {
+            success(user ? true : false);
         }
 
     });

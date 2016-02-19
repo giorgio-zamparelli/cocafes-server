@@ -9,9 +9,9 @@ var mongojs = require('mongojs');
 var swagger_node_express = require("swagger-node-express");
 var bodyParser = require( 'body-parser' );
 var Facebook = require('./Facebook.js');
-var CheckinStorage = require('./CheckinStorage.js');
-var UserStorage = require('./UserStorage.js');
-var VenueStorage = require('./VenueStorage.js');
+var CheckinStorage = require('./checkin-storage.js');
+var UserStorage = require('./user-storage.js');
+var VenueStorage = require('./venue-storage.js');
 var ejs = require('ejs');
 var app = express();
 
@@ -130,14 +130,28 @@ swagger.addPost({
                                     for (let facebookFriend of facebookUser.friends.data) {
 
                                         if (facebookFriend && facebookFriend.id && facebookFriend.id.length > 0) {
+
                                             user.friendsIds[facebookFriend.id] = true;
+
+                                            userStorage.getUserByFacebookId(facebookFriend.id, function(userFriend) {
+
+                                                if (!userFriend.friendsIds[facebookUser.id]) {
+
+                                                    userFriend.friendsIds[facebookUser.id] = true;
+
+                                                    userStorage.addOrUpdateUser(userFriend);
+
+                                                }
+
+                                            });
+
                                         }
 
                                     }
 
                                 }
 
-                                userStorage.addUser(user, function(user) {
+                                userStorage.addOrUpdateUser(user, function(user) {
 
                                     response.json(user);
 
@@ -149,6 +163,8 @@ swagger.addPost({
 
                     } else {
 
+                        console.trace();
+
                         response.status(404).send({ "error" : "Could not retrieve facebook user"});
 
                     }
@@ -156,7 +172,11 @@ swagger.addPost({
                 });
 
             } else {
+
+                console.trace(accessTokenResponse);
+
                 response.status(500).send({ "error" : "Could not fetch facebook access token"});
+
             }
 
         });
@@ -267,8 +287,6 @@ swagger.addGet({
 
                 })
                 .toArray().subscribe(users => response.json(users));
-
-
 
             } else {
                 response.status(404).send();

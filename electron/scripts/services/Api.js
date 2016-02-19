@@ -62,7 +62,7 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
         		}).error(function(response, status, headers, config) {
 
-        			console.log('Failure GET ' + baseUrl + '/users' + userId + '/friends');
+        			console.log('Failure GET ' + baseUrl + '/users/' + userId + '/friends');
 
 					if (failure) {
 						failure(status + ' ' + response);
