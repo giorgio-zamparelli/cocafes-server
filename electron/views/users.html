@@ -12,7 +12,7 @@
 
             <div>
                 <div>{{friend.firstname}} {{friend.lastname}}</div>
-                <div style="font-size:12px;">seen <span am-time-ago="friend.latestCheckin.creationTime"></span> at {{friend.latestCheckin.venueName}} </div>
+                <div style="font-size:12px;" ng-show="friend.latestCheckin">seen {{friend.latestCheckin.creationTime | momentFromNow}} at {{friend.latestCheckin.venueName}} </div>
             </div>
         </div>
 
