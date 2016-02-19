@@ -1,4 +1,6 @@
-var UUID = require('./UUID.js');
+const Rx = require('rx');
+
+const UUID = require('./UUID.js');
 
 var VenueStorage = function (database) {
 
@@ -20,17 +22,19 @@ VenueStorage.prototype.getVenueById = function (venueId, success) {
 
 };
 
-VenueStorage.prototype.getVenueByLatitudeAndLongitude = function (latitude, longitude, success) {
+VenueStorage.prototype.getVenues = function (latitude, longitude) {
 
-    this.collection.find({}, function(error, venue) {
+    return Rx.Observable.create(function(observer) {
 
-        if (error) throw error;
+        this.collection.find({}, function(error, venues) {
 
-        if (success) {
-            success(venue);
-        }
+            if(error) observer.onError(error);
+            observer.onNext(venues);
+            observer.onCompleted();
 
-    });
+        });
+
+    }.bind(this));
 
 };
 

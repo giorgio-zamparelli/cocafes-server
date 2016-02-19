@@ -301,26 +301,14 @@ swagger.addGet({
 swagger.addGet({
 
     'spec': {
-        path : "/api/v1/users",
-        nickname : "users"
-    },
-    'action': function(request, response, next){
-
-        response.json({"629795542":{"id": "629795542", "firstname":"Giorgio","friendsIds":["703176770","547535464"]}, "703176770":{"firstname":"Mathilde"}, "547535464": {"firstname":"Dries"}});
-
-    }
-
-});
-
-swagger.addGet({
-
-    'spec': {
         path : "/api/v1/venues",
         nickname : "users"
     },
     'action': function(request, response, next){
 
-        response.json([{"name":"Coworking café"},{"name":"CAMP"}]);
+        venueStorage.getVenues().subscribe(venues => {
+            response.json(venues);
+        });
 
     }
 

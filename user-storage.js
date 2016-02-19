@@ -61,7 +61,7 @@ UserStorage.prototype.addOrUpdateUser = function (user, success) {
     }
 
     this.collection.update({_id: user._id}, {$set : user}, {upsert: true}, function(error, result) {
-        
+
         if (error) throw error;
 
         if (success) {

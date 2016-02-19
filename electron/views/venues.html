@@ -1,8 +1,8 @@
 <div ng-include src="'views/header.html'"></div>
 
-<div>
+<div style="display:flex; flex-direction:column;align-items: stretch;padding:8px;">
 
-    <div class="card-expanded" ng-repeat="venue in venues">
+    <div class="card-expanded clickable" ng-repeat="venue in venues" style="margin-bottom:8px;">
         <div>{{venue.name}}</div>
     </div>
 
