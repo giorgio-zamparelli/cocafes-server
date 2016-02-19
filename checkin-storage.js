@@ -25,10 +25,10 @@ CheckinStorage.prototype.getLatestCheckinByUserId = function (userId, success) {
 
     return Rx.Observable.create(function(observer) {
 
-        this.collection.findOne({"userId": userId}, function(error, checkin) {
+        this.collection.find({"userId": userId}).sort({creationTime:-1}).limit(1, function(error, checkins) {
 
             if(error) observer.onError(error);
-            observer.onNext(checkin);
+            observer.onNext(checkins && checkins.length > 0 ? checkins[0] : null);
             observer.onCompleted();
 
         });
