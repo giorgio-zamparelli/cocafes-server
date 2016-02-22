@@ -286,7 +286,27 @@ swagger.addGet({
                     });
 
                 })
-                .toArray().subscribe(users => response.json(users));
+                .toArray()
+                .map(users => {
+
+                    return users.sort(function(userLeft, userRight) {
+
+                        var result = 0;
+
+                        var latestCheckinCreationTimeLeft = userLeft && userLeft.latestCheckin && userLeft.latestCheckin.creationTime ? userLeft.latestCheckin.creationTime : -1;
+
+                        var latestCheckinCreationTimeRight = userLeft && userRight.latestCheckin && userRight.latestCheckin.creationTime ? userRight.latestCheckin.creationTime : -1;
+
+                        if (result === 0) {
+                            result = latestCheckinCreationTimeRight - latestCheckinCreationTimeLeft;
+                        }
+
+                        return result;
+
+                    });
+
+                })
+                .subscribe(users => response.json(users));
 
             } else {
                 response.status(404).send();
