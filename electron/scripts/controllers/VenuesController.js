@@ -4,9 +4,16 @@ app.controller('VenuesController', [ '$rootScope', '$scope', 'Api', function($ro
 
     $scope.venues = [];
 
+
+
     Api.getVenues($rootScope.currentUserId, function (venues) {
 
         $scope.venues = venues;
+
+        for (let venue of venues) {
+            venue.initial = venue.name[0];
+            venue.color = StringToColorConverter.convertToColorString(venue._id);
+        }
 
     });
 
