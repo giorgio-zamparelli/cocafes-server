@@ -38,6 +38,7 @@
     <script type="text/javascript">
 
         var map;
+        var userMarker;
         function initMap() {
 
             'use strict';
@@ -46,6 +47,8 @@
                 center: {lat: 18.79646, lng: 98.9723142},
                 zoom: 15
             });
+
+
 
             for (let venue of venuesInit) {
 
@@ -58,7 +61,6 @@
                         map: map,
                         title: venue.name,
                         icon: icon
-
                     });
 
                     let googleMapsUrl;
@@ -84,6 +86,18 @@
                 }
 
             }
+
+            navigator.geolocation.getCurrentPosition(function (position) {
+
+                userMarker = new google.maps.Marker({
+                    position: {lat: position.coords.latitude, lng: position.coords.longitude},
+                    map: map,
+                    icon: 'http://www.robotwoods.com/dev/misc/bluecircle.png'
+                });
+
+            }, function () {
+                console.log("navigator.geolocation failed, may not be supported");
+            });
 
         }
 
