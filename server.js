@@ -40,6 +40,16 @@ app.all('*', function(request, response, next) {
 
 });
 
+app.get('/', function (request, response, next) {
+
+    venueStorage.getVenues().subscribe(venues => {
+
+        response.render('website/index.html', {"venues": venues});
+        
+    });
+
+});
+
 app.get('/electron', function (request, response, next) {
 
     response.render('electron/index.html');

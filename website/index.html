@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            height: 100%;
+        }
+
+    </style>
+
+    <script>
+
+        var venuesInit = JSON.parse(`<%-JSON.stringify(venues)%>`);
+
+    </script>
+
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script type="text/javascript">
+
+        var map;
+        function initMap() {
+
+            'use strict';
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 18.79646, lng: 98.9723142},
+                zoom: 15
+            });
+
+            for (let venue of venuesInit) {
+
+                if (venue && venue.location && venue.location.coordinates && venue.location.coordinates.length > 1) {
+
+                    let marker = new google.maps.Marker({
+                        position: {lat: venue.location.coordinates[1], lng: venue.location.coordinates[0]},
+                        map: map,
+                        title: venue.name
+                    });
+
+                    let googleMapsUrl;
+
+                    if (venue.googlePlaceCid) {
+                        googleMapsUrl = "https://maps.google.com/?cid=" + venue.googlePlaceCid;
+                    } else {
+                        googleMapsUrl = "https://www.google.com/maps/place/" + venue.name.split(" ").join("+");
+                    }
+
+                    let infowindow = new google.maps.InfoWindow({
+                        content: `
+                            <div>${venue.name}</div>
+                            <div><a href="${googleMapsUrl}" target="_blank">OPEN IN GOOGLE MAPS</a></div>
+                        `
+                    });
+
+                    marker.addListener('click', function() {
+                        infowindow.open(map, marker);
+                    });
+
+                }
+
+            }
+
+        }
+
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsmiYX2EzjgLKKUubxcNLXgweqP7uWmOc&callback=initMap">
+    </script>
+
+  </body>
+</html>
