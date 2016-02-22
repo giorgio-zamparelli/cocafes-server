@@ -10,4 +10,22 @@ app.controller('UsersController', [ '$rootScope', '$scope', 'Api', function($roo
 
     });
 
+    $scope.showFriend = function (user) {
+
+        var url = "https://www.facebook.com/" + user.facebookId;
+
+        if (typeof require !== "undefined") {
+
+            const shell = require('electron').shell;
+
+            shell.openExternal(url);
+
+        } else {
+
+            window.open(url, '_blank');
+
+        }
+
+    };
+
 }]);

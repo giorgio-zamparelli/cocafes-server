@@ -6,13 +6,13 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 	if ($window.location.host === "localhost") {
 
-		var host = "localhost"; //require('electron').remote.getGlobal("host");
-		var port = 80; //require('electron').remote.getGlobal("port");
+		var host = "localhost";
+		var port = 80;
 
 	} else {
 
-		var host = "cocafes.herokuapp.com"; //require('electron').remote.getGlobal("host");
-		var port = 443; //require('electron').remote.getGlobal("port");
+		var host = "cocafes.herokuapp.com";
+		var port = 443;
 
 	}
 

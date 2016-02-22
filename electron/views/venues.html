@@ -2,7 +2,7 @@
 
 <div style="display:flex; flex-direction:column;align-items: stretch;padding:8px;">
 
-    <div class="card-expanded clickable" ng-repeat="venue in venues" style="margin-bottom:8px;">
+    <div class="card-expanded clickable" ng-repeat="venue in venues" ng-click="showVenue(venue)" style="margin-bottom:8px;">
         <div>{{venue.name}}</div>
     </div>
 
