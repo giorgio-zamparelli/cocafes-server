@@ -13,6 +13,15 @@
             height: 100%;
         }
 
+        .viewInGoogleMaps {
+            color:#427fed;
+            text-decoration: none;
+        }
+
+        .viewInGoogleMaps:hover {
+            text-decoration: underline;
+        }
+
     </style>
 
     <script>
@@ -42,10 +51,14 @@
 
                 if (venue && venue.location && venue.location.coordinates && venue.location.coordinates.length > 1) {
 
+                    let icon = venue.wifis && venue.wifis.length > 0 ? "http://maps.google.com/mapfiles/ms/icons/green-dot.png" : "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+
                     let marker = new google.maps.Marker({
                         position: {lat: venue.location.coordinates[1], lng: venue.location.coordinates[0]},
                         map: map,
-                        title: venue.name
+                        title: venue.name,
+                        icon: icon
+
                     });
 
                     let googleMapsUrl;
@@ -59,7 +72,8 @@
                     let infowindow = new google.maps.InfoWindow({
                         content: `
                             <div>${venue.name}</div>
-                            <div><a href="${googleMapsUrl}" target="_blank">OPEN IN GOOGLE MAPS</a></div>
+                            </br>
+                            <div><a class="viewInGoogleMaps" href="${googleMapsUrl}" target="_blank">View on Google Maps</a></div>
                         `
                     });
 
