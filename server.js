@@ -60,6 +60,7 @@ app.get('/facebook_login_success.html', function (request, response, next) {
 
 });
 
+app.use('/favicon.ico', express.static(__dirname + '/favicon.ico'));
 app.get('/', function (request, response, next) {
 
     venueStorage.getVenues().subscribe(venues => {
