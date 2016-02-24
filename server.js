@@ -4,29 +4,29 @@
 'use strict';
 
 const Rx = require('rx');
-var express = require('express');
-var mongojs = require('mongojs');
-var swagger_node_express = require("swagger-node-express");
-var bodyParser = require( 'body-parser' );
-var Facebook = require('./Facebook.js');
-var CheckinStorage = require('./checkin-storage.js');
-var UserStorage = require('./user-storage.js');
-var VenueStorage = require('./venue-storage.js');
-var ejs = require('ejs');
-var app = express();
+let express = require('express');
+let mongojs = require('mongojs');
+let swagger_node_express = require("swagger-node-express");
+let bodyParser = require( 'body-parser' );
+let Facebook = require('./Facebook.js');
+let CheckinStorage = require('./checkin-storage.js');
+let UserStorage = require('./user-storage.js');
+let VenueStorage = require('./venue-storage.js');
+let ejs = require('ejs');
+let app = express();
 
+const development = "development";
+const production = "production";
 const environment = process.env.NODE_ENV;
-const host = "development" === environment ? "localhost" : "cocafes.herokuapp.com";
-const port = "development" === environment ? 80 : 443;
+const host = development === environment ? "localhost" : "cocafes.herokuapp.com";
+const port = development === environment ? 80 : 443;
 const address = (port === 443 ? "https://" : "http://") + host + (port === 80 || port === 443 ? "" : ":" + port);
+const versionManifest = process.env.SOURCE_VERSION ? "last git commit " + process.env.SOURCE_VERSION : "server started at " + new Date();
 
-app.use('/electron/bower_components', express.static(__dirname + '/electron/bower_components'));
-app.use('/electron/scripts', express.static(__dirname + '/electron/scripts'));
-app.use('/electron/styles', express.static(__dirname + '/electron/styles'));
-app.use('/electron/views', express.static(__dirname + '/electron/views'));
 
 app.set('views', __dirname);
 app.engine('.html', ejs.__express);
+app.engine('.mf', ejs.__express);
 app.set('view engine', 'ejs');
 
 app.all('*', function(request, response, next) {
@@ -36,7 +36,27 @@ app.all('*', function(request, response, next) {
     response.header('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token,Authorization');
     response.header('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
     response.header('Access-Control-Max-Age', '1000');
+
+    response.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    response.header('Expires', '-1');
+    response.header('Pragma', 'no-cache');
+
     next();
+
+});
+
+app.get('/electron/appcache.mf', function (request, response, next) {
+
+    response.header('content-type', 'text/cache-manifest');
+    response.render('electron/appcache.mf', {"version": versionManifest});
+
+});
+
+app.use('/electron', express.static(__dirname + '/electron'));
+
+app.get('/facebook_login_success.html', function (request, response, next) {
+
+    response.render('facebook_login_success.html');
 
 });
 
@@ -45,20 +65,8 @@ app.get('/', function (request, response, next) {
     venueStorage.getVenues().subscribe(venues => {
 
         response.render('website/index.html', {"venues": venues});
-        
+
     });
-
-});
-
-app.get('/electron', function (request, response, next) {
-
-    response.render('electron/index.html');
-
-});
-
-app.get('/facebook_login_success.html', function (request, response, next) {
-
-    response.render('facebook_login_success.html');
 
 });
 
@@ -70,7 +78,7 @@ var facebook = new Facebook("1707859876137335", address + "/facebook_login_succe
 
 let mongouri;
 
-if ("development" === environment) {
+if (development === environment) {
 
     mongouri = process.env.COCAFES_MONGO_PRODUCTION_URI;
     //mongouri = "mongodb://localhost:27017/cocafes"; //mongod --dbpath ~/mongodb/cocafes/
