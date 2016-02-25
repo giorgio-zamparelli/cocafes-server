@@ -32,8 +32,20 @@ app.service('NodeLocalStorage', [function(){
 
 		get: function(key) {
 
-			var value = nodeLocalStorage.getItem(key);
-			return value && JSON.parse(value);
+			let result;
+
+			try{
+
+				var value = nodeLocalStorage.getItem(key);
+				result = value && JSON.parse(value);
+
+			} catch (exception) {
+
+				//DO NOTHING ON PURPOSE
+
+			}
+
+			return result;
 
 		},
 
