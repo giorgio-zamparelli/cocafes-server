@@ -25,7 +25,7 @@ const port = development === environment ? 80 : 443;
 const address = (port === 443 ? "https://" : "http://") + host + (port === 80 || port === 443 ? "" : ":" + port);
 const versionManifest = process.env.SOURCE_VERSION ? "last git commit " + process.env.SOURCE_VERSION : "server started at " + new Date();
 
-
+app.set('strict routing', true);
 app.set('views', __dirname);
 app.engine('.html', ejs.__express);
 app.engine('.mf', ejs.__express);
@@ -93,7 +93,13 @@ const dependencies = [
 
 ];
 
-app.get('/electron/index.html', function (request, response, next) {
+app.get('/electron', function (request, response, next) {
+
+    response.redirect('/electron/');
+
+});
+
+app.get(['/electron/', '/electron/index.html'], function (request, response, next) {
 
     let dependenciesString = "";
 
@@ -112,8 +118,6 @@ app.get('/electron/index.html', function (request, response, next) {
         dependenciesString = `<script src="./scripts/main.min.js"></script>`;
 
     }
-
-    console.log("dependenciesString = " + dependenciesString);
 
     response.render('electron/index.html', {"dependencies": dependenciesString});
 
