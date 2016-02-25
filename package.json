@@ -17,6 +17,7 @@
     "body-parser": "^1.14.2",
     "ejs": "^2.4.1",
     "express": "^4.13.4",
+    "memory-cache": "^0.1.4",
     "mongojs": "^2.3.0",
     "rx": "^4.0.7",
     "swagger-node-express": "^2.1.3"

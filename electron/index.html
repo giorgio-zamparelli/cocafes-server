@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app" manifest="appcache.mf">
+<html ng-app="app">
 <head>
 
     <meta charset="utf-8" />
@@ -12,38 +12,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="mobile-web-app-capable" content="yes">
 
-    <script src="./bower_components/appcache-nanny/appcache-nanny.js"></script>
-    <script src="./bower_components/angular/angular.js"></script>
-    <script src="./bower_components/angular-route/angular-route.js"></script>
-    <script src="./bower_components/moment/moment.js"></script>
+    <%-dependencies%>
 
-    <script src="./scripts/app.js"></script>
-
-    <script src="./scripts/model/User.js"></script>
-
-    <script src="./scripts/helpers/StringToColorConverter.js"></script>
-
-    <script src="./scripts/filters/filters.js"></script>
-
-    <script src="./scripts/directives/directives.js"></script>
-
-    <script src="./scripts/services/UsersStorage.js"></script>
-
-    <script src="./scripts/services/Api.js"></script>
-    <script src="./scripts/services/NodeLocalStorage.js"></script>
-    <script src="./scripts/services/SessionManager.js"></script>
-    <script src="./scripts/services/SessionPreferences.js"></script>
-
-    <script src="./scripts/controllers/HeaderController.js"></script>
-    <script src="./scripts/controllers/LoginController.js"></script>
-    <script src="./scripts/controllers/UsersController.js"></script>
-    <script src="./scripts/controllers/UserController.js"></script>
-    <script src="./scripts/controllers/SettingsController.js"></script>
-    <script src="./scripts/controllers/VenuesController.js"></script>
-    <script src="./scripts/controllers/VenueController.js"></script>
-
-
-    <link href="./bower_components/material-design-icons/iconfont/material-icons.css" media="all" rel="stylesheet" type="text/css" />
     <link href="./styles/main.css" media="all" rel="stylesheet" type="text/css" />
 
     <script>

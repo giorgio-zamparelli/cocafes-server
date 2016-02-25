@@ -4,16 +4,18 @@
 'use strict';
 
 const Rx = require('rx');
-let express = require('express');
-let mongojs = require('mongojs');
-let swagger_node_express = require("swagger-node-express");
-let bodyParser = require( 'body-parser' );
-let Facebook = require('./Facebook.js');
-let CheckinStorage = require('./checkin-storage.js');
-let UserStorage = require('./user-storage.js');
-let VenueStorage = require('./venue-storage.js');
-let ejs = require('ejs');
-let app = express();
+const express = require('express');
+const mongojs = require('mongojs');
+const swagger_node_express = require("swagger-node-express");
+const bodyParser = require( 'body-parser' );
+const Facebook = require('./Facebook.js');
+const CheckinStorage = require('./checkin-storage.js');
+const UserStorage = require('./user-storage.js');
+const VenueStorage = require('./venue-storage.js');
+const memoryCache = require('memory-cache');
+const fileSystem = require("fs");
+const ejs = require('ejs');
+const app = express();
 
 const development = "development";
 const production = "production";
@@ -45,10 +47,138 @@ app.all('*', function(request, response, next) {
 
 });
 
+const dependencies = [
+
+    "bower_components/appcache-nanny/appcache-nanny.js",
+    "bower_components/angular/angular.js",
+    "bower_components/angular-route/angular-route.js",
+    "bower_components/moment/moment.js",
+
+    "scripts/app.js",
+
+    "scripts/model/User.js",
+
+    "scripts/helpers/StringToColorConverter.js",
+
+    "scripts/filters/filters.js",
+
+    "scripts/directives/directives.js",
+
+    "scripts/services/UsersStorage.js",
+
+    "scripts/services/Api.js",
+    "scripts/services/NodeLocalStorage.js",
+    "scripts/services/SessionManager.js",
+    "scripts/services/SessionPreferences.js",
+
+    "scripts/controllers/HeaderController.js",
+    "scripts/controllers/LoginController.js",
+    "scripts/controllers/UsersController.js",
+    "scripts/controllers/UserController.js",
+    "scripts/controllers/SettingsController.js",
+    "scripts/controllers/VenuesController.js",
+    "scripts/controllers/VenueController.js",
+
+    "bower_components/material-design-icons/iconfont/MaterialIcons-Regular.woff2",
+    "bower_components/material-design-icons/iconfont/MaterialIcons-Regular.woff",
+    "bower_components/material-design-icons/iconfont/MaterialIcons-Regular.ttf",
+
+    "views/header.html",
+    "views/login.html",
+    "views/settings.html",
+    "views/user.html",
+    "views/users.html",
+    "views/venue.html",
+    "views/venues.html"
+
+];
+
+app.get('/electron/index.html', function (request, response, next) {
+
+    let dependenciesString = "";
+
+    if (development === environment) {
+
+        for (let dependency of dependencies) {
+
+            if (dependency.indexOf(".js") > -1) {
+                dependenciesString += `<script src="./${dependency}"></script>\n`;
+            }
+
+        }
+
+    } else {
+
+        dependenciesString = `<script src="./scripts/main.min.js"></script>`;
+
+    }
+
+    console.log("dependenciesString = " + dependenciesString);
+
+    response.render('electron/index.html', {"dependencies": dependenciesString});
+
+});
+
+app.get('/electron/scripts/main.min.js', function (request, response, next) {
+
+    var cached = memoryCache.get('/electron/scripts/main.min.js');
+
+    if (!cached) {
+
+        cached = "";
+
+        for (let dependency of dependencies) {
+
+            if (dependency.indexOf(".js") > -1) {
+                cached += fileSystem.readFileSync("./electron/" + dependency);
+            }
+
+        }
+
+        memoryCache.put('/electron/scripts/main.min.js', cached);
+
+    }
+
+    response.header('content-type', 'application/javascript');
+    response.send(cached);
+
+});
+
 app.get('/electron/appcache.mf', function (request, response, next) {
 
+    var cached = memoryCache.get('/electron/appcache.mf');
+
+    if (!cached) {
+
+        let dependenciesList = "\n";
+
+        if (development !== environment) {
+            dependenciesList += "scripts/main.min.js"
+        }
+
+        for (let dependency of dependencies) {
+            if (dependency.indexOf(".js") === -1 || development === environment) {
+                dependenciesList += "\n" + dependency;
+            }
+        }
+
+        cached =   `CACHE MANIFEST
+                    #${versionManifest}
+
+                    CACHE:
+                    index.html
+                    ${dependenciesList}
+
+                    NETWORK:
+                    *
+                    `;
+
+        memoryCache.put('/electron/appcache.mf', cached);
+
+    }
+
     response.header('content-type', 'text/cache-manifest');
-    response.render('electron/appcache.mf', {"version": versionManifest});
+    response.send(cached);
 
 });
 

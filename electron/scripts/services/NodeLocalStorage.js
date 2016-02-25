@@ -26,15 +26,16 @@ app.service('NodeLocalStorage', [function(){
 
 		add: function(key, value) {
 
-    		return nodeLocalStorage.setItem(key, value);
+    		return nodeLocalStorage.setItem(key, JSON.stringify(value));
 
         },
 
-        get: function(key) {
+		get: function(key) {
 
-    		return nodeLocalStorage.getItem(key);
+			var value = nodeLocalStorage.getItem(key);
+			return value && JSON.parse(value);
 
-        },
+		},
 
         remove: function(key) {
 
