@@ -97,7 +97,7 @@ const dependencies = [
 
 app.get('/electron', function (request, response, next) {
 
-    response.redirect('/electron/');
+    response.redirect('/electron/index.html');
 
 });
 
