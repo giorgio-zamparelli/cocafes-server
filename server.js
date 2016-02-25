@@ -5,6 +5,7 @@
 
 const Rx = require('rx');
 const express = require('express');
+const compression = require('compression');
 const mongojs = require('mongojs');
 const swagger_node_express = require("swagger-node-express");
 const bodyParser = require( 'body-parser' );
@@ -25,6 +26,7 @@ const port = development === environment ? 80 : 443;
 const address = (port === 443 ? "https://" : "http://") + host + (port === 80 || port === 443 ? "" : ":" + port);
 const versionManifest = process.env.SOURCE_VERSION ? "last git commit " + process.env.SOURCE_VERSION : "server started at " + new Date();
 
+app.use(compression());
 app.set('strict routing', true);
 app.set('views', __dirname);
 app.engine('.html', ejs.__express);
