@@ -17,6 +17,8 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 	}
 
 	const baseUrl = (port === 443 ? "https://" : "http://") + host + ":" + port + "/api/v1";
+	let cache = {};
+	let loading = {};
 
     return {
 
@@ -50,55 +52,73 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
     	},
 
-		getFriends: function(userId, success, failure) {
+		getFriends: function(userId) {
 
-			$http({method: 'GET', url: baseUrl + '/users/' + userId + '/friends'}).
+			return Rx.Observable.create(function(observer) {
 
-        		success(function(friends, status, headers, config) {
+				observer.onNext(cache.friends);
 
-        			if (success) {
-                        success(friends);
-                    }
+				if (!loading.friends) {
 
-        		}).error(function(response, status, headers, config) {
+					loading.friends = true;
 
-        			console.log('Failure GET ' + baseUrl + '/users/' + userId + '/friends');
+					$http({method: 'GET', url: baseUrl + '/users/' + userId + '/friends'}).
 
-					if (failure) {
-						failure(status + ' ' + response);
-					}
+		        		success(function(friends, status, headers, config) {
 
-        		}
+							cache.friends = friends;
+							loading.friends = false;
+		        			observer.onNext(friends);
 
-			);
+		        		}).error(function(response, status, headers, config) {
 
-    	},
+		        			console.log('Failure GET ' + baseUrl + '/users/' + userId + '/friends');
 
-		getUsers: function(success, failure) {
+							loading.friends = false;
+							observer.onError(status + ' ' + response);
 
-			$http({method: 'GET', url: baseUrl + '/users'}).
+		        		}
 
-        		success(function(users, status, headers, config) {
+					);
 
-        			if (success) {
-                        success(users);
-                    }
+				}
 
-        		}).error(function(response, status, headers, config) {
-
-        			console.log('Failure GET ' + baseUrl + '/users');
-
-					if (failure) {
-						failure(status + ' ' + response);
-					}
-
-        		}
-
-			);
+			});
 
     	},
 
-		getVenues: function(userId, success, failure) {
+		getVenues: function() {
+
+			return Rx.Observable.create(function(observer) {
+
+				observer.onNext(cache.venues);
+
+				if (!loading.venues) {
+
+					loading.venues = true;
+
+					$http({method: 'GET', url: baseUrl + '/venues'}).
+
+		        		success(function(venues, status, headers, config) {
+
+							cache.venues = venues;
+							loading.venues = false;
+		        			observer.onNext(venues);
+
+		        		}).error(function(response, status, headers, config) {
+
+		        			console.log('Failure GET ' + baseUrl + '/venues');
+
+							loading.venues = false;
+							observer.onError(status + ' ' + response);
+
+		        		}
+
+					);
+
+				}
+
+			});
 
 			$http({method: 'GET', url: baseUrl + '/venues'}).
 

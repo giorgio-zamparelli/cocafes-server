@@ -55,6 +55,7 @@ const dependencies = [
     "bower_components/angular/angular.js",
     "bower_components/angular-route/angular-route.js",
     "bower_components/moment/moment.js",
+    "bower_components/rxjs/dist/rx.all.js",
 
     "scripts/app.js",
 
@@ -162,11 +163,11 @@ app.get('/electron/appcache.mf', function (request, response, next) {
             dependenciesList += "scripts/main.min.js"
         }
 
-        for (let dependency of dependencies) {
-            if (dependency.indexOf(".js") === -1 || development === environment) {
-                dependenciesList += "\n" + dependency;
-            }
-        }
+        // for (let dependency of dependencies) {
+        //     if (dependency.indexOf(".js") === -1 || development === environment) {
+        //         dependenciesList += "\n" + dependency;
+        //     }
+        // }
 
         cached =   `CACHE MANIFEST
                     #${versionManifest}

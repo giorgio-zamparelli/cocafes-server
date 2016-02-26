@@ -4,7 +4,7 @@ app.controller('UserController', [ '$rootScope', '$scope', 'Api', function($root
 
     $scope.friends = [];
 
-    Api.getFriends($rootScope.currentUserId, function (friends) {
+    Api.getFriends($rootScope.currentUserId).subscribe(friends => {
 
         $scope.friends = friends;
 

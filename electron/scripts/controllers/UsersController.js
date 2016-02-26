@@ -1,14 +1,8 @@
-app.controller('UsersController', [ '$rootScope', '$scope', 'Api', function($rootScope, $scope, Api) {
+app.controller('UsersController', [ '$rootScope', '$scope', '$interval', 'Api', function($rootScope, $scope, $interval, Api) {
 
     'use strict';
 
     $scope.friends = [];
-
-    Api.getFriends($rootScope.currentUserId, function (friends) {
-
-        $scope.friends = friends;
-
-    });
 
     $scope.showFriend = function (user) {
 
@@ -27,5 +21,24 @@ app.controller('UsersController', [ '$rootScope', '$scope', 'Api', function($roo
         }
 
     };
+
+    var getFriends = function () {
+
+        Api.getFriends($rootScope.currentUserId).subscribe(friends => {
+
+            $scope.friends = friends;
+
+        }, error => {
+
+            //TODO
+
+        });
+
+    };
+
+    var intervalFriends = $interval(getFriends, 60000);
+    $scope.$on('$destroy', function () { $interval.cancel(intervalFriends); });
+
+    getFriends();
 
 }]);

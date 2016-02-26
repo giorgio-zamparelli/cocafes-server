@@ -1,21 +1,8 @@
-app.controller('VenuesController', [ '$rootScope', '$scope', 'Api', function($rootScope, $scope, Api) {
+app.controller('VenuesController', [ '$rootScope', '$scope', '$interval', 'Api', function($rootScope, $scope, $interval, Api) {
 
     'use strict';
 
     $scope.venues = [];
-
-
-
-    Api.getVenues($rootScope.currentUserId, function (venues) {
-
-        $scope.venues = venues;
-
-        for (let venue of venues) {
-            venue.initial = venue.name[0];
-            venue.color = StringToColorConverter.convertToColorString(venue._id);
-        }
-
-    });
 
     $scope.showVenue = function (venue) {
 
@@ -40,5 +27,33 @@ app.controller('VenuesController', [ '$rootScope', '$scope', 'Api', function($ro
         }
 
     };
+
+    var getVenues = function () {
+
+        Api.getVenues().subscribe(venues => {
+
+            $scope.venues = venues;
+
+            if (venues) {
+
+                for (let venue of venues) {
+                    venue.initial = venue.name[0];
+                    venue.color = StringToColorConverter.convertToColorString(venue._id);
+                }
+
+            }
+
+        }, error => {
+
+            //TODO
+
+        });
+
+    };
+
+    var intervalVenues = $interval(getVenues, 60000);
+    $scope.$on('$destroy', function () { $interval.cancel(intervalVenues); });
+
+    getVenues();
 
 }]);
