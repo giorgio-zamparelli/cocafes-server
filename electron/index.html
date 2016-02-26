@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html ng-app="app" manifest="./appcache.mf">
 <head>
 
     <meta charset="utf-8" />
@@ -18,23 +18,32 @@
 
     <script>
 
-        appCacheNanny.set({ 'loaderPath': './appcache-loader.html' });
-
-        appCacheNanny.on('updateready', function(event) {
-
-            console.log("window.applicationCache updateready event");
+        window.applicationCache.addEventListener('updateready', function(e) {
 
             if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
 
-                window.applicationCache.reload();
+                window.location.reload();
 
             } else {
                 // Manifest didn't changed. Nothing new to server.
             }
 
-        });
+        }, false);
 
-        appCacheNanny.start();
+        setInterval(function(){
+
+            if(navigator.onLine){
+
+                // If we don't make sure there is an appcache to do stuff with, we'll get a DOM EXCEPTION: ERROR CODE 11
+                if(window.applicationCache.status != window.applicationCache.UNCACHED) {
+                    window.applicationCache.update();
+                }
+
+             }/*else{
+                 console.log('Offline, so no checking.')
+             }*/
+
+        }, 60000);
 
     </script>
 

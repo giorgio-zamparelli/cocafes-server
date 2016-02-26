@@ -51,7 +51,6 @@ app.all('*', function(request, response, next) {
 
 const dependencies = [
 
-    "bower_components/appcache-nanny/appcache-nanny.js",
     "bower_components/angular/angular.js",
     "bower_components/angular-route/angular-route.js",
     "bower_components/moment/moment.js",
@@ -111,7 +110,7 @@ app.get(['/electron/', '/electron/index.html'], function (request, response, nex
         for (let dependency of dependencies) {
 
             if (dependency.indexOf(".js") > -1) {
-                dependenciesString += `<script src="./${dependency}"></script>\n`;
+                dependenciesString += `<script src="./${dependency}"></script>\n\t`;
             }
 
         }
