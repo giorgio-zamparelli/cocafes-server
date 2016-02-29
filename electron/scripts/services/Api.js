@@ -60,13 +60,17 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 			return Rx.Observable.create(function(observer) {
 
-				let friends = [];
+				if (Object.keys(cache.friends).length > 0) {
 
-				for (let friendId in cache.friends) {
-					friends.push(cache.friends[friendId]);
+					let friends = [];
+
+					for (let friendId in cache.friends) {
+						friends.push(cache.friends[friendId]);
+					}
+
+					observer.onNext(friends);
+
 				}
-
-				observer.onNext(friends);
 
 				if (!loading.friends.all) {
 
@@ -139,13 +143,17 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 			return Rx.Observable.create(function(observer) {
 
-				let venues = [];
+				if (Object.keys(cache.venues).length > 0) {
 
-				for (let venueId in cache.venues) {
-					venues.push(cache.venues[venueId]);
+					let venues = [];
+
+					for (let venueId in cache.venues) {
+						venues.push(cache.venues[venueId]);
+					}
+
+					observer.onNext(venues);
+
 				}
-
-				observer.onNext(venues);
 
 				if (!loading.venues.all) {
 

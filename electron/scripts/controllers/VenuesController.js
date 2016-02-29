@@ -2,7 +2,7 @@ app.controller('VenuesController', [ '$rootScope', '$scope', '$location', '$inte
 
     'use strict';
 
-    $scope.venues = [];
+    $scope.venues;
 
     $scope.showGoogleMaps = function (venue) {
 

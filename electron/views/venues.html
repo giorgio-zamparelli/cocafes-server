@@ -21,6 +21,9 @@
 </style>
 
 <div ng-include src="'views/header.html'"></div>
+<div style="position:fixed;width:100%;height:100%;z-index: 999;display:flex;flex-direction:column;align-items:center;justify-content:center;" ng-if="!venues">
+    <div class="loader" style="margin-bottom:64px;"></div>
+</div>
 
 <div style="display:flex; flex-direction:column;align-items: stretch;padding:8px;">
 

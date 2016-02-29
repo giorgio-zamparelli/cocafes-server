@@ -2,7 +2,7 @@ app.controller('UsersController', [ '$rootScope', '$scope', '$interval', 'Api', 
 
     'use strict';
 
-    $scope.friends = [];
+    $scope.friends;
 
     $scope.showFriend = function (user) {
 

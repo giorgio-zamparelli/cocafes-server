@@ -363,7 +363,7 @@ body, html {
     animation: rotate 0.8s infinite linear;
     border-width: 8px;
     border-style: solid;
-    border-color: #ffffff;
+    border-color: #c0c0c0;
     border-right-color: transparent;
     border-radius: 50%;
 
