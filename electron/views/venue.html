@@ -1,1 +1,69 @@
-<h1>Coming Soon</h1>
+<div class="toolbar">
+    <div class="woodgrain flex" ng-navigate="/venues">
+        <div class="toolbar-icon" ng-if="!hasBeenModified"><span class="material-icons" >arrow_back</span></div>
+        <div class="toolbar-icon" ng-show="hasBeenModified"><span class="material-icons" >close</span></div>
+        <div class="toolbar-title"><span>{{venue.name}}</span></div>
+    </div>
+</div>
+<div class="toolbar-fixer"></div>
+<div>
+
+    <form ng-submit="saveVenue()" >
+
+        <div style="margin: 0 auto;max-width:500px;">
+
+            <div class="card-background section" style="margin:8px;">
+
+                <div class="card-input" style="height:48px;">
+                    <label class="flex"><span class="align-self-center" style="padding-left:16px" translate>name</span></label>
+                    <input id="nameInput" name="name" placeholder="name" type="text" required class="flex-grow-one" style="text-align:right;border-width:0px;padding:8px;font-size:16px;outline: none;" ng-model="venue.name" />
+                </div>
+
+            </div>
+
+            <div style="text-align:center;text-transform: uppercase;margin:8px;font-size: 14px;" ng-if="venue.wifis && venue.wifis.length > 0">Wifis</div>
+
+            <div class="card-background section" style="margin:8px;" ng-if="venue.wifis && venue.wifis.length > 0">
+
+                <div ng-repeat="wifi in venue.wifis" class="clickable divider" style="display:flex;height:48px;align-items:center;" ng-click="toggleWifi(wifi)">
+
+                    <span class="material-icons" style="display:flex;justify-content:center;font-size:32px;width:48px;">wifi</span>
+                    <span style="flex-grow:1;">{{wifi.ssid}}</span>
+                    <span class="material-icons" style="display:flex;justify-content:center;font-size:32px;width:48px;">close</span>
+
+                </div>
+
+            </div>
+
+            <div style="text-align:center;text-transform: uppercase;margin:8px;font-size: 14px;" ng-if="wifis && wifis.length === 0">No wifi found</div>
+            <div style="text-align:center;text-transform: uppercase;margin:8px;font-size: 14px;" ng-if="wifis && wifis.length > 0">New wifis found</div>
+            <div style="text-align:center;text-transform: uppercase;margin:8px;font-size: 14px;display:flex;align-items:center;justify-content:center;" ng-if="wificontrol && !wifis">
+                <div>Looking for nearby wifis</div>
+                <div class="loader-small-gray" style="margin-left:8px;"></div>
+            </div>
+
+            <div class="card-background section" style="margin:8px;" ng-if="wifis && wifis.length > 0">
+
+                <div ng-repeat="wifi in wifis" class="clickable divider" style="display:flex;height:48px;align-items:center;" ng-style="!wifi.added && {'color':'#b0b0b0'}" ng-click="toggleWifi(wifi)">
+
+                    <span class="material-icons" style="display:flex;justify-content:center;font-size:32px;width:48px;" ng-if="!wifi.added">add</span>
+                    <span class="material-icons" style="display:flex;justify-content:center;font-size:32px;width:48px;" ng-if="wifi.added">wifi</span>
+                    <span style="flex-grow:1;">{{wifi.ssid}}</span>
+                    <span style="margin-right:8px;font-size:12px;text-transform:uppercase;">signal {{wifi.signalPercentage}}%</span>
+
+                </div>
+
+            </div>
+
+            <div style="height:42px" ng-if="hasBeenModified">&nbsp;</div>
+
+        </div>
+
+        <button class="geo button" style="display:flex;align-items:center;justify-content:center;position:fixed;bottom:0;" type="submit" ng-if="hasBeenModified">
+            <div>Save Venue</div>
+            <div class="loader-small-white" style="margin-left:8px;" ng-if="savingVenue"></div>
+        </button>
+
+    </form>
+
+<div>

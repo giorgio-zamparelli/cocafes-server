@@ -89,7 +89,7 @@ app.controller('AddVenueController', [ '$rootScope', '$scope', '$location', 'Api
 
             $scope.addingVenue = true;
 
-            $scope.saveVenue = Api.postVenue($scope.venue).subscribe(venue => {
+            Api.postVenue($scope.venue).subscribe(venue => {
 
                 $scope.addingVenue = false;
 

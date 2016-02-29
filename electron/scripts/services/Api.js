@@ -18,7 +18,11 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 	const baseUrl = (port === 443 ? "https://" : "http://") + host + ":" + port + "/api/v1";
 	let cache = {};
+	cache.friends = {};
+	cache.venues = {};
 	let loading = {};
+	loading.friends = {};
+	loading.venues = {};
 
     return {
 
@@ -56,25 +60,69 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 			return Rx.Observable.create(function(observer) {
 
-				observer.onNext(cache.friends);
+				let friends = [];
 
-				if (!loading.friends) {
+				for (let friendId in cache.friends) {
+					friends.push(cache.friends[friendId]);
+				}
 
-					loading.friends = true;
+				observer.onNext(friends);
+
+				if (!loading.friends.all) {
+
+					loading.friends.all = true;
 
 					$http({method: 'GET', url: baseUrl + '/users/' + userId + '/friends'}).
 
 		        		success(function(friends, status, headers, config) {
 
-							cache.friends = friends;
-							loading.friends = false;
+							for (let friend of friends) {
+								cache.friends[friend._id] = friend;
+							}
+
+							loading.friends.all = false;
 		        			observer.onNext(friends);
 
 		        		}).error(function(response, status, headers, config) {
 
 		        			console.log('Failure GET ' + baseUrl + '/users/' + userId + '/friends');
 
-							loading.friends = false;
+							loading.friends.all = false;
+							observer.onError(status + ' ' + response);
+
+		        		}
+
+					);
+
+				}
+
+			});
+
+    	},
+
+		getFriend: function(friendId) {
+
+			return Rx.Observable.create(function(observer) {
+
+				observer.onNext(cache.friends[friendId]);
+
+				if (!loading.friends[friendId]) {
+
+					loading.friends[friendId] = true;
+
+					$http({method: 'GET', url: baseUrl + '/friends/' + friendId}).
+
+		        		success(function(friend, status, headers, config) {
+
+							cache.friends[friendId] = friend;
+							loading.friends[friendId] = false;
+		        			observer.onNext(friend);
+
+		        		}).error(function(response, status, headers, config) {
+
+		        			console.log('Failure GET ' + baseUrl + '/friends/' + friendId);
+
+							loading.friends[friendId] = false;
 							observer.onError(status + ' ' + response);
 
 		        		}
@@ -91,25 +139,69 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 			return Rx.Observable.create(function(observer) {
 
-				observer.onNext(cache.venues);
+				let venues = [];
 
-				if (!loading.venues) {
+				for (let venueId in cache.venues) {
+					venues.push(cache.venues[venueId]);
+				}
 
-					loading.venues = true;
+				observer.onNext(venues);
+
+				if (!loading.venues.all) {
+
+					loading.venues.all = true;
 
 					$http({method: 'GET', url: baseUrl + '/venues'}).
 
 		        		success(function(venues, status, headers, config) {
 
-							cache.venues = venues;
-							loading.venues = false;
+							for (let venue of venues) {
+								cache.venues[venue._id] = venue;
+							}
+
+							loading.venues.all = false;
 		        			observer.onNext(venues);
 
 		        		}).error(function(response, status, headers, config) {
 
 		        			console.log('Failure GET ' + baseUrl + '/venues');
 
-							loading.venues = false;
+							loading.venues.all = false;
+							observer.onError(status + ' ' + response);
+
+		        		}
+
+					);
+
+				}
+
+			});
+
+    	},
+
+		getVenue: function(venueId) {
+
+			return Rx.Observable.create(function(observer) {
+
+				observer.onNext(cache.venues[venueId]);
+
+				if (!loading.venues[venueId]) {
+
+					loading.venues[venueId] = true;
+
+					$http({method: 'GET', url: baseUrl + '/venues/' + venueId}).
+
+		        		success(function(venue, status, headers, config) {
+
+							cache.venues[venueId] = venue;
+							loading.venues[venueId] = false;
+		        			observer.onNext(venue);
+
+		        		}).error(function(response, status, headers, config) {
+
+		        			console.log('Failure GET ' + baseUrl + '/venues/' + venueId);
+
+							loading.venues[venueId] = false;
 							observer.onError(status + ' ' + response);
 
 		        		}

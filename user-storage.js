@@ -56,8 +56,18 @@ UserStorage.prototype.getUsersByFacebookIds = function (usersFacebookIds) {
 
 UserStorage.prototype.addOrUpdateUser = function (user, success) {
 
-    if (!user._id) {
+    if(!user._id) {
+
         user._id = UUID.generate();
+        user.lastEditTime = new Date().getTime();
+
+    }
+
+    if(!user.creationTime || user.creationTime === 0) {
+
+        user.creationTime = new Date().getTime();
+        user.lastEditTime = user.creationTime;
+
     }
 
     this.collection.update({_id: user._id}, {$set : user}, {upsert: true}, function(error, result) {

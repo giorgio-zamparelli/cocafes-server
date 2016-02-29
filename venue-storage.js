@@ -8,20 +8,6 @@ var VenueStorage = function (database) {
 
 };
 
-VenueStorage.prototype.getVenueById = function (venueId, success) {
-
-    this.collection.findOne({"_id": venueId}, function(error, venue) {
-
-        if (error) throw error;
-
-        if (success) {
-            success(venue);
-        }
-
-    });
-
-};
-
 VenueStorage.prototype.getVenues = function (latitude, longitude) {
 
     return Rx.Observable.create(function(observer) {
@@ -38,17 +24,41 @@ VenueStorage.prototype.getVenues = function (latitude, longitude) {
 
 };
 
+VenueStorage.prototype.getVenueById = function (venueId, success) {
+
+    return Rx.Observable.create(function(observer) {
+
+        this.collection.findOne({"_id": venueId}, function(error, venue) {
+
+            if(error) {
+                console.error(error);
+                observer.onError(error);
+            }
+            observer.onNext(venue);
+            observer.onCompleted();
+
+        });
+
+    }.bind(this));
+
+};
+
 VenueStorage.prototype.getVenueByMac = function (mac, success) {
 
-    this.collection.findOne({"wifis.mac": mac}, function(error, venue) {
+    return Rx.Observable.create(function(observer) {
 
-        if (error) throw error;
+        this.collection.findOne({"wifis.mac": mac}, function(error, venue) {
 
-        if (success) {
-            success(venue);
-        }
+            if(error) {
+                console.error(error);
+                observer.onError(error);
+            }
+            observer.onNext(venue);
+            observer.onCompleted();
 
-    });
+        });
+
+    }.bind(this));
 
 };
 
@@ -70,7 +80,7 @@ VenueStorage.prototype.addVenue = function (venue) {
 
         }
 
-        this.collection.insert(venue, function(error, venue) {
+        this.collection.update({_id: venue._id}, {$set : venue}, {upsert: true}, function(error, result) {
 
             if(error) {
                 console.error(error);

@@ -1,10 +1,10 @@
-app.controller('VenuesController', [ '$rootScope', '$scope', '$interval', 'Api', function($rootScope, $scope, $interval, Api) {
+app.controller('VenuesController', [ '$rootScope', '$scope', '$location', '$interval', 'Api', function($rootScope, $scope, $location, $interval, Api) {
 
     'use strict';
 
     $scope.venues = [];
 
-    $scope.showVenue = function (venue) {
+    $scope.showGoogleMaps = function (venue) {
 
         var url;
 
@@ -25,6 +25,12 @@ app.controller('VenuesController', [ '$rootScope', '$scope', '$interval', 'Api',
             window.open(url, '_blank');
 
         }
+
+    };
+
+    $scope.showVenue = function (venue) {
+
+        $location.path("/venues/" + venue._id);
 
     };
 

@@ -358,7 +358,7 @@ swagger.addPost({
 
             let checkin = {};
 
-            venueStorage.getVenueByMac(addCheckinRequest.connectedWifi.mac, function(venue) {
+            venueStorage.getVenueByMac(addCheckinRequest.connectedWifi.mac).subscribe(venue => {
 
                 if (venue) {
 
@@ -486,6 +486,31 @@ swagger.addGet({
 
         venueStorage.getVenues().subscribe(venues => {
             response.json(venues);
+        });
+
+    }
+
+});
+
+swagger.addGet({
+
+    'spec': {
+        path : "/api/v1/venues/{venueId}",
+        parameters : [swagger_node_express.pathParam("venueId", "ID of venue that needs to be fetched", "string")],
+        nickname : "venues"
+    },
+    'action': function(request, response, next) {
+
+        var venueId = request.params.venueId;
+
+        venueStorage.getVenueById(venueId).subscribe(venue => {
+
+            if (venue) {
+                response.json(venue);
+            } else {
+                response.status(404).send();
+            }
+
         });
 
     }
