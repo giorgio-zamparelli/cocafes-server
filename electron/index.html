@@ -14,6 +14,8 @@
 
     <%-dependencies%>
 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsmiYX2EzjgLKKUubxcNLXgweqP7uWmOc&libraries=places"></script>
+
     <link href="./styles/main.css" media="all" rel="stylesheet" type="text/css" />
 
     <script>
@@ -30,7 +32,7 @@
 
         }, false);
 
-        setInterval(function(){
+        var checkManifest = function () {
 
             if(navigator.onLine){
 
@@ -43,7 +45,11 @@
                  console.log('Offline, so no checking.')
              }*/
 
-        }, 60000);
+        };
+
+        setInterval(checkManifest, 60000);
+
+        checkManifest();
 
     </script>
 

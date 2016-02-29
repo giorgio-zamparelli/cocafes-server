@@ -53,8 +53,18 @@ CheckinStorage.prototype.getCheckinsByIds = function (checkinsIds, success) {
 
 CheckinStorage.prototype.addCheckin = function (checkin, success) {
 
-    if (!checkin._id) {
+    if(!checkin._id) {
+
         checkin._id = UUID.generate();
+        checkin.lastEditTime = new Date().getTime();
+
+    }
+
+    if(!checkin.creationTime || checkin.creationTime === 0) {
+
+        checkin.creationTime = new Date().getTime();
+        checkin.lastEditTime = checkin.creationTime;
+
     }
 
     this.collection.insert(checkin, function(error, checkin) {

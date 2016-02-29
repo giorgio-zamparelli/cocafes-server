@@ -59,11 +59,15 @@
                 zoom: 15
             });
 
-
-
             for (let venue of venuesInit) {
 
                 if (venue && venue.location && venue.location.coordinates && venue.location.coordinates.length > 1) {
+
+                    if (typeof venue.location.coordinates[1] !== "number" || typeof venue.location.coordinates[0] !== "number") {
+
+                        console.log("Venue " + venue.name + " has strings for latitude and longitude");
+
+                    }
 
                     let icon = venue.wifis && venue.wifis.length > 0 ? "http://maps.google.com/mapfiles/ms/icons/green-dot.png" : "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
 
@@ -114,8 +118,7 @@
 
     </script>
 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsmiYX2EzjgLKKUubxcNLXgweqP7uWmOc&callback=initMap">
-    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsmiYX2EzjgLKKUubxcNLXgweqP7uWmOc&callback=initMap"></script>
 
   </body>
 </html>

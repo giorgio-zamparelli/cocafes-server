@@ -59,6 +59,7 @@ const dependencies = [
     "scripts/app.js",
 
     "scripts/model/User.js",
+    "scripts/model/UUID.js",
 
     "scripts/helpers/StringToColorConverter.js",
 
@@ -80,6 +81,8 @@ const dependencies = [
     "scripts/controllers/SettingsController.js",
     "scripts/controllers/VenuesController.js",
     "scripts/controllers/VenueController.js",
+    "scripts/controllers/AddVenueController.js",
+    "scripts/controllers/SearchPlaceController.js",
 
     "bower_components/material-design-icons/iconfont/MaterialIcons-Regular.woff2",
     "bower_components/material-design-icons/iconfont/MaterialIcons-Regular.woff",
@@ -483,6 +486,34 @@ swagger.addGet({
 
         venueStorage.getVenues().subscribe(venues => {
             response.json(venues);
+        });
+
+    }
+
+});
+
+swagger.addPost({
+
+    'spec': {
+        path : "/api/v1/venues",
+        "parameters": [{"name": "body","description": "Add Venue","required": true,"type": "Venue","paramType": "body"}],
+        nickname : "checkins"
+    },
+    'action': function(request, response, next) {
+
+        let venue = request.body;
+
+        if (!venue) response.status(400).send({ "error" : "Missing venue object in the request body"});
+        if (!venue.name) response.status(400).send({ "error" : "Missing venue name"});
+
+        venueStorage.addVenue(venue).subscribe(venue => {
+
+            response.json(venue);
+
+        }, error => {
+
+            response.status(500).send({ error : error});
+
         });
 
     }

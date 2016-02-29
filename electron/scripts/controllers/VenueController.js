@@ -2,12 +2,4 @@ app.controller('VenueController', [ '$rootScope', '$scope', 'Api', function($roo
 
     'use strict';
 
-    $scope.venues = [];
-
-    Api.getVenues($rootScope.currentUserId, function (venues) {
-
-        $scope.venues = venues;
-
-    });
-
 }]);

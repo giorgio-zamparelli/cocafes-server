@@ -120,27 +120,31 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 			});
 
-			$http({method: 'GET', url: baseUrl + '/venues'}).
+    	},
 
-        		success(function(venues, status, headers, config) {
+		postVenue: function(venue) {
 
-        			if (success) {
-                        success(venues);
-                    }
+			return Rx.Observable.create(function(observer) {
 
-        		}).error(function(response, status, headers, config) {
+				$http({method: 'POST', url: baseUrl + '/venues', data: venue}).
 
-        			console.log('Failure GET ' + baseUrl + '/venues');
+	        		success(function(venue, status, headers, config) {
 
-					if (failure) {
-						failure(status + ' ' + response);
-					}
+	        			observer.onNext(venue);
 
-        		}
+	        		}).error(function(response, status, headers, config) {
 
-			);
+	        			console.log('Failure POST ' + baseUrl + '/venues');
 
-    	}
+						observer.onError(status + ' ' + JSON.stringify(response));
+
+	        		}
+
+				);
+
+			});
+
+    	},
 
     };
 }]);

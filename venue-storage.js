@@ -52,21 +52,36 @@ VenueStorage.prototype.getVenueByMac = function (mac, success) {
 
 };
 
-VenueStorage.prototype.addVenue = function (venue, success) {
+VenueStorage.prototype.addVenue = function (venue) {
 
-    if (!venue._id) {
-        venue._id = UUID.generate();
-    }
+    return Rx.Observable.create(function(observer) {
 
-    this.collection.insert(venue, function(error, venue) {
+        if(!venue._id) {
 
-        if (error) throw error;
+            venue._id = UUID.generate();
+            venue.lastEditTime = new Date().getTime();
 
-        if (success) {
-            success(venue);
         }
 
-    });
+        if(!venue.creationTime || venue.creationTime === 0) {
+
+            venue.creationTime = new Date().getTime();
+            venue.lastEditTime = venue.creationTime;
+
+        }
+
+        this.collection.insert(venue, function(error, venue) {
+
+            if(error) {
+                console.error(error);
+                observer.onError(error);
+            }
+            observer.onNext(venue);
+            observer.onCompleted();
+
+        });
+
+    }.bind(this));
 
 };
 

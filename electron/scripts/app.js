@@ -20,6 +20,7 @@ app.config([ '$routeProvider', function($routeProvider) {
 		}
 	}).
 
+
     when('/users/:userId', {
 		templateUrl : 'views/user.html',
 		controller : 'UserController',
@@ -39,6 +40,22 @@ app.config([ '$routeProvider', function($routeProvider) {
     when('/venues', {
 		templateUrl : 'views/venues.html',
 		controller : 'VenuesController',
+		access: {
+			isPublic : false
+		}
+	}).
+
+    when('/add-venue', {
+		templateUrl : 'views/add-venue.html',
+		controller : 'AddVenueController',
+		access: {
+			isPublic : false
+		}
+	}).
+
+    when('/search-venue', {
+		templateUrl : 'views/search-place.html',
+		controller : 'SearchPlaceController',
 		access: {
 			isPublic : false
 		}
