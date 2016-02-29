@@ -364,7 +364,7 @@ swagger.addPost({
 
                     checkin.creationTime = new Date().getTime();
                     checkin.lastEditTime = checkin.creationTime;
-                    checkin.userId = addCheckinRequest.userId;
+                    checkin.userId = addCheckinRequest.userId.replace("\"", "").replace("\"", "");
                     checkin.venueId = venue._id;
                     checkin.venueName = venue.name;
 
