@@ -10,13 +10,13 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
         } else {
 
-            loginInCoworkerServer();
+            loginInCocafesServer();
 
         }
 
     };
 
-    var loginInCoworkerServer = function () {
+    var loginInCocafesServer = function () {
 
         Api.loginWithFacebook($scope.code, function success(user) {
 
@@ -101,7 +101,7 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
         if (code) {
 
             $scope.code = code;
-            loginInCoworkerServer();
+            loginInCocafesServer();
 
         } else if (error) {
             alert('Oops! Something went wrong and we couldn\'t log you in using Facebook. Please try again.');

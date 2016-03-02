@@ -5,6 +5,16 @@
 
 <div style="display:flex; flex-direction:column;align-items: stretch;padding:8px;">
 
+    <div class="card-expanded clickable" style="margin-bottom:8px;display:flex;align-items:center;" ng-click="showUserProfile(user)">
+
+        <img ng-src="{{user.picture}}" style="margin-right:8px;border-radius: 50%;"/>
+
+        <div>
+            <div>{{user.firstname}} {{user.lastname}}</div>
+            <div style="font-size:12px;" ng-show="user.latestCheckin">seen {{user.latestCheckin.creationTime | momentFromNow}} at {{user.latestCheckin.venueName}} </div>
+        </div>
+    </div>
+
     <div ng-if="friends && friends.length > 0">
 
         <div style="text-align:center;text-transform: uppercase;margin-bottom:8px;font-size: 14px;">Friends</div>

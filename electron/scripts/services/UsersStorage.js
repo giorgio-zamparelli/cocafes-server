@@ -2,7 +2,7 @@ app.service('UsersStorage', ['NodeLocalStorage', function(NodeLocalStorage){
 
 	'use strict';
 
-	var prefix = 'coworker.users.';
+	var prefix = 'users.';
 
 	return {
 

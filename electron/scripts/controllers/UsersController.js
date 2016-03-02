@@ -1,6 +1,8 @@
-app.controller('UsersController', [ '$rootScope', '$scope', '$interval', 'Api', function($rootScope, $scope, $interval, Api) {
+app.controller('UsersController', [ '$rootScope', '$scope', '$interval', 'Api', 'UsersStorage', function($rootScope, $scope, $interval, Api, UsersStorage) {
 
     'use strict';
+
+    $scope.user = UsersStorage.getUser($rootScope.currentUserId);
 
     $scope.friends;
 
