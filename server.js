@@ -224,11 +224,7 @@ app.get('/facebook_login_success.html', function (request, response, next) {
 app.use('/favicon.ico', express.static(__dirname + '/favicon.ico'));
 app.get('/', function (request, response, next) {
 
-    venueStorage.getVenues().subscribe(venues => {
-
-        response.render('website/index.html', {"venues": venues});
-
-    });
+    response.render('website/index.html');
 
 });
 
@@ -236,7 +232,7 @@ app.get('/thailand/chiang-mai', function (request, response, next) {
 
     venueStorage.getVenues({countryCode : "TH", city : "Chiang Mai"}).subscribe(venues => {
 
-        response.render('website/index.html', {"venues": venues});
+        response.render('website/map.html', {"venues": venues});
 
     });
 
@@ -246,7 +242,7 @@ app.get('/thailand/koh-lanta', function (request, response, next) {
 
     venueStorage.getVenues({countryCode : "TH", city : "Koh Lanta"}).subscribe(venues => {
 
-        response.render('website/index.html', {"venues": venues});
+        response.render('website/map.html', {"venues": venues});
 
     });
 
