@@ -1,7 +1,7 @@
 'use strict';
 
 const Rx = require('rx');
-var UUID = require('./UUID.js');
+const UUID = require('./UUID.js');
 
 var CheckinStorage = function (database) {
 

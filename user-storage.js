@@ -1,7 +1,6 @@
 'use strict';
 
 const Rx = require('rx');
-
 const UUID = require('./UUID.js');
 
 var UserStorage = function (database) {
