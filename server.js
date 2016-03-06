@@ -606,20 +606,20 @@ let onStartServer = function () {
 
 let server;
 
-if (development === environment) {
+// if (development === environment) {
 
     server = http.createServer(app).listen(app.get('port'), onStartServer);
 
-} else {
-
-    let options = {
-
-        key: fileSystem.readFileSync('./ssl/server.key'),
-        certificate: fileSystem.readFileSync('./ssl/www.cocafes.com.crt'),
-        ca: [fileSystem.readFileSync('./ssl/gd_bundle-g2-g1.crt')]
-
-    };
-
-    server = https.createServer(options, app).listen(app.get('port'), onStartServer);
-
-}
+// } else {
+//
+//     let options = {
+//
+//         key: fileSystem.readFileSync('./ssl/server.key'),
+//         certificate: fileSystem.readFileSync('./ssl/www.cocafes.com.crt'),
+//         ca: [fileSystem.readFileSync('./ssl/gd_bundle-g2-g1.crt')]
+//
+//     };
+//
+//     server = https.createServer(options, app).listen(app.get('port'), onStartServer);
+//
+// }
