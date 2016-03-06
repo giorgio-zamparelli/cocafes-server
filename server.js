@@ -195,7 +195,7 @@ app.get('/electron/appcache.mf', function (request, response, next) {
 
 app.use(function (request, res, next) {
 
-    if (!request.secure && developemnt !== environment) {
+    if (!request.secure && development !== environment) {
 
         return response.redirect('https://' + request.get('host') + request.url);
 
