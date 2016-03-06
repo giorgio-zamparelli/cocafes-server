@@ -1,3 +1,5 @@
+'use strict';
+
 const Rx = require('rx');
 var UUID = require('./UUID.js');
 

@@ -210,6 +210,26 @@ app.get('/', function (request, response, next) {
 
 });
 
+app.get('/thailand/chiang-mai', function (request, response, next) {
+
+    venueStorage.getVenues({countryCode : "TH", city : "Chiang Mai"}).subscribe(venues => {
+
+        response.render('website/index.html', {"venues": venues});
+
+    });
+
+});
+
+app.get('/thailand/koh-lanta', function (request, response, next) {
+
+    venueStorage.getVenues({countryCode : "TH", city : "Koh Lanta"}).subscribe(venues => {
+
+        response.render('website/index.html', {"venues": venues});
+
+    });
+
+});
+
 var swagger = swagger_node_express.createNew(app);
 
 var facebook = new Facebook("1707859876137335", address + "/facebook_login_success.html", "bfc74d90801f5ca51febb8c47d4f146b");

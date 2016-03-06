@@ -54,10 +54,9 @@
 
             'use strict';
 
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: 18.79646, lng: 98.9723142},
-                zoom: 15
-            });
+            map = new google.maps.Map(document.getElementById('map'));
+
+            let bounds = new google.maps.LatLngBounds();
 
             for (let venue of venuesInit) {
 
@@ -65,7 +64,7 @@
 
                     if (typeof venue.location.coordinates[1] !== "number" || typeof venue.location.coordinates[0] !== "number") {
 
-                        console.log("Venue " + venue.name + " has strings for latitude and longitude");
+                        console.error("Venue " + venue.name + " has strings for latitude and longitude");
 
                     }
 
@@ -77,6 +76,8 @@
                         title: venue.name,
                         icon: icon
                     });
+
+                    bounds.extend(marker.position);
 
                     let googleMapsUrl;
 
@@ -101,6 +102,8 @@
                 }
 
             }
+
+            map.fitBounds(bounds);
 
             navigator.geolocation.getCurrentPosition(function (position) {
 

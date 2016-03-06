@@ -1,3 +1,5 @@
+'use strict';
+
 const Rx = require('rx');
 
 const UUID = require('./UUID.js');
@@ -8,11 +10,21 @@ var VenueStorage = function (database) {
 
 };
 
-VenueStorage.prototype.getVenues = function (latitude, longitude) {
+VenueStorage.prototype.getVenues = function (query) {
+
+    let mongoQuery = {};
+
+    if (query && query.countryCode) {
+        mongoQuery.countryCode = query.countryCode;
+    }
+
+    if (query && query.city) {
+        mongoQuery.city = query.city;
+    }
 
     return Rx.Observable.create(function(observer) {
 
-        this.collection.find({}, function(error, venues) {
+        this.collection.find(mongoQuery, function(error, venues) {
 
             if(error) observer.onError(error);
             observer.onNext(venues);
