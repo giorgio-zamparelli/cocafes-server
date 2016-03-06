@@ -193,19 +193,25 @@ app.get('/electron/appcache.mf', function (request, response, next) {
 
 });
 
-app.use(function (request, response, next) {
+if (development !== environment) {
 
-    if (!request.secure && development !== environment) {
+    app.use(function (request, response, next) {
 
-        return response.redirect('https://' + request.get('host') + request.url);
+        response.setHeader('Strict-Transport-Security', 'max-age=8640000; includeSubDomains');
 
-    } else {
+        if (request.headers['x-forwarded-proto'] && request.headers['x-forwarded-proto'] === "http") {
 
-        next();
+            return response.redirect(301, 'https://' + request.host + request.url);
 
-    }
+        } else {
 
-});
+            return next();
+
+        }
+
+    });
+
+}
 
 app.use('/electron', express.static(__dirname + '/electron'));
 
