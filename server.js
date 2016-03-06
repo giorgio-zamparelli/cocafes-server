@@ -193,7 +193,7 @@ app.get('/electron/appcache.mf', function (request, response, next) {
 
 });
 
-app.use(function (request, res, next) {
+app.use(function (request, response, next) {
 
     if (!request.secure && development !== environment) {
 
