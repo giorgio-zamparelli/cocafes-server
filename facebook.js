@@ -1,9 +1,7 @@
-'use strict';
-
 var https = require('https');
 var Rx = require('rx');
 
-var Facebook = function (client_id, redirect_uri, client_secret) {
+function Facebook(client_id, redirect_uri, client_secret) {
 
     this.client_id = client_id;
     this.redirect_uri = redirect_uri;
