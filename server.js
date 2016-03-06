@@ -199,9 +199,11 @@ app.use(function (request, response, next) {
 
         return response.redirect('https://' + request.get('host') + request.url);
 
-    }
+    } else {
 
-    next();
+        next();
+
+    }
 
 });
 
