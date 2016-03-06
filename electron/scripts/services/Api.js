@@ -11,7 +11,7 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 	} else {
 
-		var host = "cocafes.herokuapp.com";
+		var host = "www.cocafes.com";
 		var port = 443;
 
 	}

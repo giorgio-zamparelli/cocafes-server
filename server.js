@@ -4,12 +4,14 @@
 'use strict';
 
 const Rx = require('rx');
+const http = require('http');
+const https = require('https');
 const express = require('express');
 const compression = require('compression');
 const mongojs = require('mongojs');
 const swagger_node_express = require("swagger-node-express");
 const bodyParser = require( 'body-parser' );
-const Facebook = require('./Facebook.js');
+const Facebook = require('./facebook.js');
 const CheckinStorage = require('./checkin-storage.js');
 const UserStorage = require('./user-storage.js');
 const VenueStorage = require('./venue-storage.js');
@@ -21,7 +23,7 @@ const app = express();
 const development = "development";
 const production = "production";
 const environment = process.env.NODE_ENV;
-const host = development === environment ? "localhost" : "cocafes.herokuapp.com";
+const host = development === environment ? "localhost" : "www.cocafes.com";
 const port = development === environment ? 80 : 443;
 const address = (port === 443 ? "https://" : "http://") + host + (port === 80 || port === 443 ? "" : ":" + port);
 const versionManifest = process.env.SOURCE_VERSION ? "last git commit " + process.env.SOURCE_VERSION : "server started at " + new Date();
@@ -591,11 +593,33 @@ app.get(/^\/docs(\/.*)?$/, function(req, res, next) {
 
 });
 
-var server = app.listen(app.get('port'), function () {
+let onStartServer = function () {
 
-    var host = server.address().address !== "::" ? server.address().address : "localhost";
     var port = server.address().port;
+    var protocol = port === 80 ? "http" : "https";
+    var host = server.address().address !== "::" ? server.address().address : "localhost";
 
-    console.log('cocafes server listening on http://%s:%s', host, port);
 
-});
+    console.log('cocafes server listening on %s://%s:%s', protocol, host, port);
+
+};
+
+let server;
+
+if (development === environment) {
+
+    server = http.createServer(app).listen(app.get('port'), onStartServer);
+
+} else {
+
+    let options = {
+
+        key: fileSystem.readFileSync('./ssl/server.key'),
+        certificate: fileSystem.readFileSync('./ssl/www.cocafes.com.crt'),
+        ca: [fileSystem.readFileSync('./ssl/gd_bundle-g2-g1.crt')]
+
+    };
+
+    server = https.createServer(options, app).listen(app.get('port'), onStartServer);
+
+}
