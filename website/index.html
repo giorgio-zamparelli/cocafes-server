@@ -68,7 +68,7 @@
 
                     }
 
-                    let icon = venue.wifis && venue.wifis.length > 0 ? "http://maps.google.com/mapfiles/ms/icons/green-dot.png" : "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+                    let icon = venue.wifis && venue.wifis.length > 0 ? "https://maps.google.com/mapfiles/ms/icons/green-dot.png" : "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
 
                     let marker = new google.maps.Marker({
                         position: {lat: venue.location.coordinates[1], lng: venue.location.coordinates[0]},
@@ -110,7 +110,7 @@
                 userMarker = new google.maps.Marker({
                     position: {lat: position.coords.latitude, lng: position.coords.longitude},
                     map: map,
-                    icon: 'http://www.robotwoods.com/dev/misc/bluecircle.png'
+                    icon: 'https://www.robotwoods.com/dev/misc/bluecircle.png'
                 });
 
             }, function () {
