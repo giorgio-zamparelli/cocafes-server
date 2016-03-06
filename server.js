@@ -193,6 +193,18 @@ app.get('/electron/appcache.mf', function (request, response, next) {
 
 });
 
+app.use(function (request, res, next) {
+
+    if (!request.secure && developemnt !== environment) {
+
+        return response.redirect('https://' + request.get('host') + request.url);
+
+    }
+
+    next();
+
+});
+
 app.use('/electron', express.static(__dirname + '/electron'));
 
 app.get('/facebook_login_success.html', function (request, response, next) {
