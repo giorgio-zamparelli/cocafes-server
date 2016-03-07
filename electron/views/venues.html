@@ -31,7 +31,8 @@
 
         <div class="flex" style="height:48px;min-width:48px;width:48px;border-radius:48px;margin:8px;background:{{venue.color}};"><span class="align-self-center" style="width:100%;text-align:center;color:white;font-size:32px;text-transform:uppercase;">{{venue.initial}}</span></div>
         <div>
-            <div>{{venue.name}}</div>
+            <div style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{venue.name}}</div>
+            <div style="font-size:12px;max-height:28px;overflow: hidden;text-overflow: ellipsis;" ng-show="venue.distance">{{venue.distance | howFar}}</div>
         </div>
 
     </div>

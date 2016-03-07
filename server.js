@@ -15,6 +15,7 @@ const Facebook = require('./facebook.js');
 const CheckinStorage = require('./checkin-storage.js');
 const UserStorage = require('./user-storage.js');
 const VenueStorage = require('./venue-storage.js');
+const geoip2 = require('node-geoip2');
 const memoryCache = require('memory-cache');
 const fileSystem = require("fs");
 const ejs = require('ejs');
@@ -27,6 +28,8 @@ const host = development === environment ? "localhost" : "www.cocafes.com";
 const port = development === environment ? 80 : 443;
 const address = (port === 443 ? "https://" : "http://") + host + (port === 80 || port === 443 ? "" : ":" + port);
 const versionManifest = process.env.SOURCE_VERSION ? "last git commit " + process.env.SOURCE_VERSION : "server started at " + new Date();
+
+geoip2.init();
 
 app.use(compression());
 app.set('strict routing', true);
@@ -72,6 +75,7 @@ const dependencies = [
     "scripts/services/UsersStorage.js",
 
     "scripts/services/Api.js",
+    "scripts/services/LocationManager.js",
     "scripts/services/NodeLocalStorage.js",
     "scripts/services/SessionManager.js",
     "scripts/services/SessionPreferences.js",
@@ -399,8 +403,8 @@ swagger.addPost({
 
     'spec': {
         path : "/api/v1/checkins",
-        "parameters": [{"name": "body","description": "Add Checking Request","required": true,"type": "AddCheckinRequest","paramType": "body"}],
-        nickname : "checkins"
+        "parameters": [{"name": "body","description": "Add Checking Request","required": true,"type": "nRequest","paramType": "body"}],
+        nickname : "addCheckin"
     },
     'action': function(request, response, next) {
 
@@ -419,6 +423,11 @@ swagger.addPost({
                     checkin.userId = addCheckinRequest.userId.replace("\"", "").replace("\"", "");
                     checkin.venueId = venue._id;
                     checkin.venueName = venue.name;
+
+                    if (venue.location && venue.location.coordinates && venue.location.coordinates.length > 1) {
+                        checkin.venueLatitude = venue.location.coordinates[1];
+                        checkin.venueLongitude = venue.location.coordinates[0];
+                    }
 
                     checkinStorage.addCheckin(checkin, function(checkin) {
 
@@ -532,13 +541,66 @@ swagger.addGet({
 
     'spec': {
         path : "/api/v1/venues",
-        nickname : "users"
+        nickname : "getVenues"
     },
     'action': function(request, response, next){
 
-        venueStorage.getVenues().subscribe(venues => {
-            response.json(venues);
-        });
+        let latitude = request.query.latitude && !isNaN(request.query.latitude) ? Number(request.query.latitude) : undefined;
+        let longitude = request.query.longitude && !isNaN(request.query.longitude) ? Number(request.query.longitude) : undefined;
+        let userId = request.query.userId;
+        let ip = request.headers['X-FORWARDED-FOR'] || request.connection.remoteAddress;
+
+        if (ip === "::1") {
+            ip = "118.173.50.88";
+        }
+
+        function getVenues(latitude, longitude, maxDistance) {
+
+            var query = {};
+
+            if (latitude) {
+                query.latitude = latitude;
+            }
+
+            if (longitude) {
+                query.longitude = longitude;
+            }
+
+            if (maxDistance) {
+                query.maxDistance = maxDistance;
+            }
+
+            venueStorage.getVenues(query).subscribe(venues => {
+                response.json(venues);
+            });
+
+        };
+
+        if (latitude && longitude) {
+
+            getVenues(latitude, longitude, 10000);
+
+        } else if (ip) {
+
+            geoip2.lookupSimple(ip, function(error, result) {
+
+                if (error) {
+
+                    getVenues();
+
+                } else if (result) {
+
+                    getVenues(result.location.latitude, result.location.longitude);
+
+                }
+
+            });
+
+        } else {
+
+            getVenues();
+
+        }
 
     }
 
@@ -549,7 +611,7 @@ swagger.addGet({
     'spec': {
         path : "/api/v1/venues/{venueId}",
         parameters : [swagger_node_express.pathParam("venueId", "ID of venue that needs to be fetched", "string")],
-        nickname : "venues"
+        nickname : "getVenue"
     },
     'action': function(request, response, next) {
 
@@ -574,7 +636,7 @@ swagger.addPost({
     'spec': {
         path : "/api/v1/venues",
         "parameters": [{"name": "body","description": "Add Venue","required": true,"type": "Venue","paramType": "body"}],
-        nickname : "checkins"
+        nickname : "addVenue"
     },
     'action': function(request, response, next) {
 

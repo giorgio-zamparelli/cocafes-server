@@ -13,6 +13,32 @@ VenueStorage.prototype.getVenues = function (query) {
 
     let mongoQuery = {};
 
+    if (query && query.latitude && query.longitude) {
+
+        mongoQuery =    {
+                            location : {
+
+                                $near : {
+
+                                    $geometry : {
+
+                                        type : "Point" ,
+                                        coordinates : [ query.longitude ,  query.latitude ]
+
+                                    }
+
+                                }
+
+                            }
+
+                        };
+
+        if (query.maxDistance) {
+            mongoQuery.location.$near.$maxDistance = query.maxDistance;
+        }
+
+    }
+
     if (query && query.countryCode) {
         mongoQuery.countryCode = query.countryCode;
     }

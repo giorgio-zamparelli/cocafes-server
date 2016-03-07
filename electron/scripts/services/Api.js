@@ -139,7 +139,7 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
     	},
 
-		getVenues: function() {
+		getVenues: function(location) {
 
 			return Rx.Observable.create(function(observer) {
 
@@ -159,7 +159,7 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 					loading.venues.all = true;
 
-					$http({method: 'GET', url: baseUrl + '/venues'}).
+					$http({method: 'GET', url: baseUrl + '/venues', params: location}).
 
 		        		success(function(venues, status, headers, config) {
 
