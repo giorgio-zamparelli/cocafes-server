@@ -548,9 +548,24 @@ swagger.addGet({
         let latitude = request.query.latitude && !isNaN(request.query.latitude) ? Number(request.query.latitude) : undefined;
         let longitude = request.query.longitude && !isNaN(request.query.longitude) ? Number(request.query.longitude) : undefined;
         let userId = request.query.userId;
-        let ip = request.headers['X-FORWARDED-FOR'] || request.connection.remoteAddress;
+        let ip;
 
-        if (ip === "::1") {
+        // Amazon EC2 / Heroku workaround to get real client IP
+        var forwardedIpsStr = req.header('x-forwarded-for');
+        if (forwardedIpsStr) {
+
+            // 'x-forwarded-for' header may return multiple IP addresses in  the format: "client IP, proxy 1 IP, proxy 2 IP" so take the the first one
+            var forwardedIps = forwardedIpsStr.split(',');
+            ip = forwardedIps[0];
+
+        }
+
+        if (!ip) {
+            // Ensure getting client IP address still works in  development environment
+            ip = req.connection.remoteAddress;
+        }
+
+        if (development === environment && ip === "::1") {
             ip = "118.173.50.88";
         }
 
