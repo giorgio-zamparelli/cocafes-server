@@ -124,6 +124,20 @@ app.get(['/electron/', '/electron/index.html'], function (request, response, nex
 
         dependenciesString = `<script src="./scripts/main.min.js"></script>`;
 
+        for (let dependency of dependencies) {
+
+            if (dependency.indexOf(".html") > -1) {
+
+                let htmlFile = "";
+                fileSystem.readFileSync(__dirname + "/electron/" + dependency).toString().split('\n').forEach(function (line) {
+                    htmlFile += "\n\t\t" + line;
+                });
+                dependenciesString += `\n\t<script type="text/ng-template" id="${dependency}">\n${htmlFile}\n\t</script>`;
+
+            }
+
+        }
+
     }
 
     response.render('electron/index.html', {"dependencies": dependenciesString});
@@ -141,7 +155,7 @@ app.get('/electron/scripts/main.min.js', function (request, response, next) {
         for (let dependency of dependencies) {
 
             if (dependency.indexOf(".js") > -1) {
-                cached += fileSystem.readFileSync("./electron/" + dependency);
+                cached += fileSystem.readFileSync(__dirname + "/electron/" + dependency);
             }
 
         }
