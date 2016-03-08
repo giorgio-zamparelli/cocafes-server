@@ -116,7 +116,7 @@
 
                     <h1 style="text-align:center;">Find friends working in cafes near you</h1>
 
-                    <a class="actionButton" href="/releases/osx/latest">Download</a>
+                    <a id="actionButton" class="actionButton" href="/releases/osx/latest">Download</a>
 
                 </div>
 
@@ -125,6 +125,22 @@
         </div>
 
     </div>
+
+    <script>
+
+        var os = "Unknown OS";
+        if (navigator.appVersion.indexOf("Win")!=-1) os = "Windows";
+        if (navigator.appVersion.indexOf("Mac")!=-1) os = "Mac OS X";
+        if (navigator.appVersion.indexOf("X11")!=-1) os = "UNIX";
+        if (navigator.appVersion.indexOf("Linux")!=-1) os = "Linux";
+
+        var actionButton = document.getElementsByClassName("actionButton")[0];
+
+        if (os === "Windows") {
+            actionButton.href = "/releases/windows/latest";
+        }
+
+    </script>
 
 </body>
 </html>
