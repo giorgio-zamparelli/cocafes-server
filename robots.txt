@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://www.cocafes.com/sitemap.xml

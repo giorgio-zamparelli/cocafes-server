@@ -239,6 +239,7 @@ app.get('/facebook_login_success.html', function (request, response, next) {
 
 });
 
+app.use('/robots.txt', express.static(__dirname + '/robots.txt'));
 app.use('/favicon.ico', express.static(__dirname + '/favicon.ico'));
 app.get('/', function (request, response, next) {
 
@@ -263,6 +264,23 @@ app.get('/thailand/koh-lanta', function (request, response, next) {
         response.render('website/map.html', {"venues": venues});
 
     });
+
+});
+
+app.get('/releases/:os/:releaseId', function (request, response, next) {
+
+    let releaseId = request.params.releaseId;
+    let os = request.params.os;
+
+    if (os === "osx" || os === "windows") {
+
+        if ( !releaseId || releaseId === "latest") {
+            releaseId = "0.0.13";
+        }
+
+    }
+
+    response.redirect('http://s3.amazonaws.com/cocafes/releases/' + os + '/' + releaseId + '/cocafes.zip');
 
 });
 
