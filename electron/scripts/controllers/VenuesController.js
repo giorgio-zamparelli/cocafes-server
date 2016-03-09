@@ -16,7 +16,7 @@ app.controller('VenuesController', [ '$rootScope', '$scope', '$location', '$inte
 
         if (typeof require !== "undefined") {
 
-            const shell = require('electron').shell;
+            var shell = require('electron').shell;
 
             shell.openExternal(url);
 
@@ -36,15 +36,16 @@ app.controller('VenuesController', [ '$rootScope', '$scope', '$location', '$inte
 
     var getVenues = function () {
 
-        let location = LocationManager.getLocation();
+        var location = LocationManager.getLocation();
 
-        Api.getVenues(location).subscribe(venues => {
+        Api.getVenues(location).subscribe(function (venues) {
 
             $scope.venues = venues;
 
             if (venues) {
 
-                for (let venue of venues) {
+                for (var i = 0; i < venues.length; i++) {
+                    var venue = venues[i];
                     venue.initial = venue.name[0];
                     venue.color = StringToColorConverter.convertToColorString(venue._id);
 
@@ -56,7 +57,7 @@ app.controller('VenuesController', [ '$rootScope', '$scope', '$location', '$inte
 
             }
 
-        }, error => {
+        }, function (error) {
 
             //TODO
 

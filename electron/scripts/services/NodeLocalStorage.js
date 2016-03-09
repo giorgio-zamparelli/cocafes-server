@@ -6,8 +6,8 @@ app.service('NodeLocalStorage', [function(){
 
 	if (typeof(require) !== 'undefined') {
 
-		const userDataPath = require('electron').remote.getGlobal("userDataPath");
-		const LocalStorage = require('electron').remote.require('node-localstorage').LocalStorage;
+		var userDataPath = require('electron').remote.getGlobal("userDataPath");
+		var LocalStorage = require('electron').remote.require('node-localstorage').LocalStorage;
 		nodeLocalStorage = new LocalStorage(userDataPath);
 
 	} else {
@@ -32,7 +32,7 @@ app.service('NodeLocalStorage', [function(){
 
 		get: function(key) {
 
-			let result;
+			var result;
 
 			try{
 

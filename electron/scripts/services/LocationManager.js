@@ -12,9 +12,9 @@ app.service('LocationManager', ['$rootScope', 'UsersStorage', function($rootScop
 
 		getLocation: function() {
 
-			let location = {};
+			var location = {};
 
-			let user = UsersStorage.getUser($rootScope.currentUserId);
+			var user = UsersStorage.getUser($rootScope.currentUserId);
 
 			if (user && user.latestCheckin && user.latestCheckin.venueLatitude && user.latestCheckin.venueLongitude) {
 				location.latitude = user.latestCheckin.venueLatitude;

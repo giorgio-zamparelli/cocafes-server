@@ -35,8 +35,8 @@ app.controller('AddVenueController', [ '$rootScope', '$scope', '$location', 'Api
 
     $scope.toggleWifi = function (wifi) {
 
-        let foundWifi = false;
-        let i = 0;
+        var foundWifi = false;
+        var i = 0;
 
         while (i < $scope.wifis.length && !foundWifi) {
 
@@ -89,13 +89,13 @@ app.controller('AddVenueController', [ '$rootScope', '$scope', '$location', 'Api
 
             $scope.addingVenue = true;
 
-            Api.postVenue($scope.venue).subscribe(venue => {
+            Api.postVenue($scope.venue).subscribe(function(venue) {
 
                 $scope.addingVenue = false;
 
                 $location.path("/venues");
 
-            }, error => {
+            }, function(error) {
 
                 $scope.addingVenue = false;
 
@@ -125,10 +125,10 @@ app.controller('AddVenueController', [ '$rootScope', '$scope', '$location', 'Api
 
                 var wifis = [];
 
-                for (let i = 0; i < response.networks.length; i++) {
+                for (var i = 0; i < response.networks.length; i++) {
 
-                    let signalDbm = Number(response.networks[i].signal_level);
-                    let signalPercentage = 0;
+                    var signalDbm = Number(response.networks[i].signal_level);
+                    var signalPercentage = 0;
 
                     if (signalDbm) {
 

@@ -14,8 +14,8 @@ app.controller('VenueController', [ '$rootScope', '$scope', '$routeParams', '$lo
 
         $scope.hasBeenModified = true;
 
-        let foundWifi = false;
-        let i = 0;
+        var foundWifi = false;
+        var i = 0;
 
         while (i < $scope.venue.wifis.length && !foundWifi) {
 
@@ -70,13 +70,13 @@ app.controller('VenueController', [ '$rootScope', '$scope', '$routeParams', '$lo
 
             $scope.savingVenue = true;
 
-            Api.postVenue($scope.venue).subscribe(venue => {
+            Api.postVenue($scope.venue).subscribe(function(venue) {
 
                 $scope.savingVenue = false;
 
                 $location.path("/venues");
 
-            }, error => {
+            }, function(error) {
 
                 $scope.savingVenue = false;
 
@@ -106,10 +106,10 @@ app.controller('VenueController', [ '$rootScope', '$scope', '$routeParams', '$lo
 
                 var wifis = [];
 
-                for (let i = 0; i < response.networks.length; i++) {
+                for (var i = 0; i < response.networks.length; i++) {
 
-                    let signalDbm = Number(response.networks[i].signal_level);
-                    let signalPercentage = 0;
+                    var signalDbm = Number(response.networks[i].signal_level);
+                    var signalPercentage = 0;
 
                     if (signalDbm) {
 
@@ -162,11 +162,11 @@ app.controller('VenueController', [ '$rootScope', '$scope', '$routeParams', '$lo
 
     var getVenue = function () {
 
-        Api.getVenue($scope.venueId).subscribe(venue => {
+        Api.getVenue($scope.venueId).subscribe(function(venue) {
 
             $scope.venue = venue;
 
-        }, error => {
+        }, function (error) {
 
             //TODO
 

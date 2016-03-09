@@ -12,7 +12,7 @@ app.controller('UsersController', [ '$rootScope', '$scope', '$interval', 'Api', 
 
         if (typeof require !== "undefined") {
 
-            const shell = require('electron').shell;
+            var shell = require('electron').shell;
 
             shell.openExternal(url);
 
@@ -26,11 +26,11 @@ app.controller('UsersController', [ '$rootScope', '$scope', '$interval', 'Api', 
 
     var getFriends = function () {
 
-        Api.getFriends($rootScope.currentUserId).subscribe(friends => {
+        Api.getFriends($rootScope.currentUserId).subscribe(function (friends) {
 
             $scope.friends = friends;
 
-        }, error => {
+        }, function (error) {
 
             //TODO
 

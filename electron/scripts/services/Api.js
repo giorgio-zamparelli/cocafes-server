@@ -16,11 +16,11 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 	}
 
-	const baseUrl = (port === 443 ? "https://" : "http://") + host + ":" + port + "/api/v1";
-	let cache = {};
+	var baseUrl = (port === 443 ? "https://" : "http://") + host + ":" + port + "/api/v1";
+	var cache = {};
 	cache.friends = {};
 	cache.venues = {};
-	let loading = {};
+	var loading = {};
 	loading.friends = {};
 	loading.venues = {};
 
@@ -62,9 +62,9 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 				if (Object.keys(cache.friends).length > 0) {
 
-					let friends = [];
+					var friends = [];
 
-					for (let friendId in cache.friends) {
+					for (var friendId in cache.friends) {
 						friends.push(cache.friends[friendId]);
 					}
 
@@ -80,7 +80,8 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 		        		success(function(friends, status, headers, config) {
 
-							for (let friend of friends) {
+							for (var i = 0; i < friends.length; i++) {
+								var friend = friends[i];
 								cache.friends[friend._id] = friend;
 							}
 
@@ -145,9 +146,9 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 				if (Object.keys(cache.venues).length > 0) {
 
-					let venues = [];
+					var venues = [];
 
-					for (let venueId in cache.venues) {
+					for (var venueId in cache.venues) {
 						venues.push(cache.venues[venueId]);
 					}
 
@@ -163,7 +164,8 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 		        		success(function(venues, status, headers, config) {
 
-							for (let venue of venues) {
+							for (var i = 0; i < venues.length; i++) {
+								var venue = venues[i];
 								cache.venues[venue._id] = venue;
 							}
 
