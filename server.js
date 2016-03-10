@@ -292,31 +292,41 @@ for (let cityId in cities) {
 
 app.get('/sitemap.xml', function (request, response, next) {
 
+    let venues = venueStorage.getVenues().subscribe(function (venues) {
 
+        let urls = '\n\n\t<url>\n\t\t<loc>https://www.cocafes.com</loc>\n\t</url>';
 
-    let urls = `
-    <url>
-        <loc>https://www.cocafes.com</loc>
-    </url>`;
+        for (let cityId in cities) {
 
-    for (let cityId in cities) {
+            let city = cities[cityId];
 
-        let city = cities[cityId];
+            urls += `\n\n\t<url>\n\t\t<loc>https://www.cocafes.com/${city.countryId}/${cityId}</loc>\n\t</url>`;
 
-        urls +=`\n
-    <url>
-        <loc>https://www.cocafes.com/${city.countryId}/${cityId}</loc>
-    </url>`;
+        }
 
-    }
+        for (let venue of venues) {
 
-    let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> 
-    ${urls}
-</urlset>`;
+            if (venue && venue.city && venue.countryCode) {
 
-    response.header('content-type', 'text/cache-manifest');
-    response.send(sitemap);
+                let cityId = venue.city.toLowerCase().split(" ").join("-");
+                let countryId = venue.countryCode.toLowerCase();
+                let venueName = venue.name.toLowerCase().split(" ").join("-");
+
+                urls += `\n\n\t<url>\n\t\t<loc>https://www.cocafes.com/${countryId}/${cityId}/cafes/${venueName}</loc>\n\t</url>`;
+
+            }
+
+        }
+
+        let sitemap = '<?xml version="1.0" encoding="UTF-8"?>' +
+        '\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
+            urls +
+        '\n</urlset>';
+
+        response.header('content-type', 'text/cache-manifest');
+        response.send(sitemap);
+
+    });
 
 });
 
