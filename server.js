@@ -310,7 +310,8 @@ app.get('/sitemap.xml', function (request, response, next) {
 
                 let cityId = venue.city.toLowerCase().split(" ").join("-");
                 let countryId = venue.countryCode.toLowerCase();
-                let venueName = venue.name.toLowerCase().split(" ").join("-");
+                let venueName = venue.name.toLowerCase().split(" ").join("-").split("&").join("%26");
+
 
                 urls += `\n\n\t<url>\n\t\t<loc>https://www.cocafes.com/${countryId}/${cityId}/cafes/${venueName}</loc>\n\t</url>`;
 
