@@ -105,9 +105,6 @@ VenueStorage.prototype.getVenueByName = function (venueName, success) {
 
         permutations.push(venueArray.join(" "));
 
-
-        console.log(JSON.stringify(permutations));
-
         this.collection.findOne({"name": { $in: permutations }}, function(error, venue) {
 
             if(error) {
