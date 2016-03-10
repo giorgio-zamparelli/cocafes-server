@@ -14,7 +14,30 @@
 
     }
 
+    .quitButton {
+
+        width:40px;
+        height:40px;
+        position:fixed;
+        top:0px;
+        right:0px;
+        font-size:24px;
+        cursor:pointer;
+        background-color: transparent;
+        border-width: 0px;
+        color: white;
+
+    }
+
+    .quitButton:hover {
+
+        color:#d0ae96;
+
+    }
+
 </style>
+
+<button ng-if="quit" ng-click="quit()" class="quitButton">&#10006;</button>
 
 <div style="display:flex;flex-direction:column;justify-content:center;text-align:center;">
 

@@ -2,6 +2,16 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
     'use strict';
 
+    if (typeof require !== "undefined") {
+
+        $scope.quit = function () {
+
+            require('electron').remote.getGlobal("app").quit();
+
+        };
+
+    }
+
     $scope.loginWithFacebook = function () {
 
         if (!$scope.code) {

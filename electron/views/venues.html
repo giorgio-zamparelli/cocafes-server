@@ -27,7 +27,7 @@
 
 <div style="display:flex; flex-direction:column;align-items: stretch;padding:8px;">
 
-    <div class="clickable flex align-items-center" style="overflow: hidden;background:color:white;height:64px;margin-bottom:8px;padding-right:8px;" ng-repeat="venue in venues" ng-click="showGoogleMaps(venue)" ng-right-click="showVenue(venue)" ng-long-click="showVenue(venue)" ng-long-touch="showVenue(venue)">
+    <div class="clickable flex align-items-center" style="overflow:hidden;background:color:white;height:64px;margin-bottom:8px;padding-right:8px;" ng-repeat="venue in venues" ng-click="showGoogleMaps(venue)" ng-right-click="showVenue(venue)" ng-long-click="showVenue(venue)" ng-long-touch="showVenue(venue)">
 
         <div class="flex" style="height:48px;min-width:48px;width:48px;border-radius:48px;margin:8px;background:{{venue.color}};"><span class="align-self-center" style="width:100%;text-align:center;color:white;font-size:32px;text-transform:uppercase;">{{venue.initial}}</span></div>
         <div>

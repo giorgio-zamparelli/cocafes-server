@@ -193,14 +193,7 @@ body, html {
 
 .clickable:not(.disabled):hover {
 
-    background: #ade1f5;
-    cursor: pointer;
-
-}
-
-.clickable:not(.disabled):active {
-
-    background: #85d3ef;
+    background: #d0ae96;
     cursor: pointer;
 
 }
