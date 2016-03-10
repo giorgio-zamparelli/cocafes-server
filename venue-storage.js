@@ -80,6 +80,49 @@ VenueStorage.prototype.getVenueById = function (venueId, success) {
 
 };
 
+VenueStorage.prototype.getVenueByName = function (venueName, success) {
+
+    return Rx.Observable.create(function(observer) {
+
+        venueName = venueName.split("-").join(" ");
+
+        let permutations = [ venueName ];
+        let venueArray = venueName.split(" ");
+
+        for (var i = 0; i < venueArray.length; i++) {
+
+            venueArray[i] = venueArray[i].charAt(0).toLowerCase() + venueArray[i].slice(1)
+
+        }
+
+        permutations.push(venueArray.join(" "));
+
+        for (var i = 0; i < venueArray.length; i++) {
+
+            venueArray[i] = venueArray[i].charAt(0).toUpperCase() + venueArray[i].slice(1)
+
+        }
+
+        permutations.push(venueArray.join(" "));
+
+
+        console.log(JSON.stringify(permutations));
+
+        this.collection.findOne({"name": { $in: permutations }}, function(error, venue) {
+
+            if(error) {
+                console.error(error);
+                observer.onError(error);
+            }
+            observer.onNext(venue);
+            observer.onCompleted();
+
+        });
+
+    }.bind(this));
+
+};
+
 VenueStorage.prototype.getVenueByMac = function (mac, success) {
 
     return Rx.Observable.create(function(observer) {

@@ -248,25 +248,47 @@ app.get('/', function (request, response, next) {
 
 });
 
-app.get('/thailand/chiang-mai', function (request, response, next) {
+let cities = {
 
-    venueStorage.getVenues({countryCode : "TH", city : "Chiang Mai"}).subscribe(venues => {
+    "chiang-mai" : { name : "Chiang Mai", countryCode : "TH", countryId : "thailand", countryName : "Thailand"},
+    "koh-lanta" : { name : "Koh Lanta", countryCode : "TH", countryId : "thailand", countryName : "Thailand"}
 
-        response.render('website/map.html', {"venues": venues});
+};
+
+for (let cityId in cities) {
+
+    let city = cities[cityId];
+
+    app.get([`/${city.countryId}/${cityId}`, `/${city.countryId}/${cityId}/cafes`], function (request, response, next) {
+
+        venueStorage.getVenues({"countryCode" : city.countryCode, "city" : city.name}).subscribe(venues => {
+
+            response.render('website/map.html', {"venues": venues});
+
+        });
 
     });
 
-});
+    app.get(`/${city.countryId}/${cityId}/cafes/:venueName`, function (request, response, next) {
 
-app.get('/thailand/koh-lanta', function (request, response, next) {
+        let venueName = request.params.venueName;
 
-    venueStorage.getVenues({countryCode : "TH", city : "Koh Lanta"}).subscribe(venues => {
+        venueStorage.getVenueByName(venueName).subscribe(venue => {
 
-        response.render('website/map.html', {"venues": venues});
+            if (venue) {
+                response.render('website/venue.html', {"venue": venue, "city" : city.name, "country" : city.countryName });
+
+            } else {
+
+                response.redirect(`/${city.countryId}/${cityId}/cafes`);
+                
+            }
+
+        });
 
     });
 
-});
+}
 
 app.get('/releases/:os/:releaseId', function (request, response, next) {
 
