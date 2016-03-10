@@ -323,7 +323,7 @@ app.get('/sitemap.xml', function (request, response, next) {
             urls +
         '\n</urlset>';
 
-        response.header('content-type', 'text/cache-manifest');
+        response.header('content-type', 'application/xml');
         response.send(sitemap);
 
     });
