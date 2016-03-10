@@ -66,6 +66,7 @@ const dependencies = [
     "scripts/model/User.js",
     "scripts/model/UUID.js",
 
+    "scripts/helpers/Countries.js",
     "scripts/helpers/StringToColorConverter.js",
 
     "scripts/filters/filters.js",
@@ -427,10 +428,10 @@ swagger.addPost({
     'action': function(request, response, next) {
 
         let addCheckinRequest = request.body;
+        let ip = getIpFromRequest(request);
+        let checkin = {};
 
         if (addCheckinRequest.connectedWifi && addCheckinRequest.connectedWifi.mac) {
-
-            let checkin = {};
 
             venueStorage.getVenueByMac(addCheckinRequest.connectedWifi.mac).subscribe(venue => {
 
@@ -438,9 +439,18 @@ swagger.addPost({
 
                     checkin.creationTime = new Date().getTime();
                     checkin.lastEditTime = checkin.creationTime;
+                    checkin.type = "venue";
                     checkin.userId = addCheckinRequest.userId.replace("\"", "").replace("\"", "");
                     checkin.venueId = venue._id;
                     checkin.venueName = venue.name;
+
+                    if (venue.countryCode) {
+                        checkin.countryCode = venue.countryCode;
+                    }
+
+                    if (venue.city) {
+                        checkin.city = venue.city;
+                    }
 
                     if (venue.location && venue.location.coordinates && venue.location.coordinates.length > 1) {
                         checkin.venueLatitude = venue.location.coordinates[1];
@@ -455,7 +465,22 @@ swagger.addPost({
 
                 } else {
 
-                    response.status(204).send();
+                    geoip2.lookupSimple(ip, function(error, result) {
+
+                        if (error) {
+
+                            response.status(204).send();
+
+                        } else if (result) {
+
+                            checkin.type = "country";
+                            checkin.countryCode = result.country;
+
+                            response.json(checkin);
+
+                        }
+
+                    });
 
                 }
 
@@ -463,7 +488,22 @@ swagger.addPost({
 
         } else {
 
-            response.status(204).send();
+            geoip2.lookupSimple(ip, function(error, result) {
+
+                if (error) {
+
+                    response.status(204).send();
+
+                } else if (result) {
+
+                    checkin.type = "country";
+                    checkin.countryCode = result.country;
+
+                    response.json(checkin);
+
+                }
+
+            });
 
         }
 
@@ -566,26 +606,7 @@ swagger.addGet({
         let latitude = request.query.latitude && !isNaN(request.query.latitude) ? Number(request.query.latitude) : undefined;
         let longitude = request.query.longitude && !isNaN(request.query.longitude) ? Number(request.query.longitude) : undefined;
         let userId = request.query.userId;
-        let ip;
-
-        // Amazon EC2 / Heroku workaround to get real client IP
-        var forwardedIpsStr = request.header('x-forwarded-for');
-        if (forwardedIpsStr) {
-
-            // 'x-forwarded-for' header may return multiple IP addresses in  the format: "client IP, proxy 1 IP, proxy 2 IP" so take the the first one
-            var forwardedIps = forwardedIpsStr.split(',');
-            ip = forwardedIps[0];
-
-        }
-
-        if (!ip) {
-            // Ensure getting client IP address still works in  development environment
-            ip = request.connection.remoteAddress;
-        }
-
-        if (development === environment && ip === "::1") {
-            ip = "118.173.50.88";
-        }
+        let ip = getIpFromRequest(request);
 
         function getVenues(latitude, longitude, maxDistance) {
 
@@ -717,6 +738,34 @@ app.get(/^\/docs(\/.*)?$/, function(req, res, next) {
     return docs_handler(req, res, next);
 
 });
+
+let getIpFromRequest = function (request) {
+
+    let ip;
+
+    // Amazon EC2 / Heroku workaround to get real client IP
+    var forwardedIpsStr = request.header('x-forwarded-for');
+    if (forwardedIpsStr) {
+
+        // 'x-forwarded-for' header may return multiple IP addresses in  the format: "client IP, proxy 1 IP, proxy 2 IP" so take the the first one
+        var forwardedIps = forwardedIpsStr.split(',');
+        ip = forwardedIps[0];
+
+    }
+
+    if (!ip) {
+        // Ensure getting client IP address still works in  development environment
+        ip = request.connection.remoteAddress;
+    }
+
+    if (development === environment && (ip === "::1" || ip === "::ffff:127.0.0.1")) {
+        ip = "118.173.50.88";
+    }
+
+    return ip;
+
+
+}
 
 let onStartServer = function () {
 

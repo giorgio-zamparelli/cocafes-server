@@ -17,3 +17,13 @@ app.filter('howFar', function() {
 	};
 
 });
+
+app.filter('toCountryName', function() {
+
+  	return function(countryCode) {
+
+		return Countries.getName(countryCode);
+
+	};
+
+});
