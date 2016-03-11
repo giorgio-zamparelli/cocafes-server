@@ -662,7 +662,22 @@ swagger.addGet({
             ip = "118.173.50.88";
         }
 
-        response.send(html);
+        html += "\ngeoip2.lookupSimple(" + ip + ")";
+        geoip2.lookupSimple(ip, function(error, result) {
+
+            if (error) {
+
+                html += "\nerror " + JSON.stringify(error);
+
+            } else if (result) {
+
+                html += "\nresult " + JSON.stringify(result);
+
+            }
+
+            response.send(html);
+
+        });
 
     }
 
