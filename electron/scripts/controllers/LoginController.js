@@ -59,15 +59,15 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
             let serverUrl;
 
-            // if ($window.location.host === "localhost") {
-            //
-        	// 	serverUrl = "http://localhost";
-            //
-        	// } else {
+            if ($window.location.host === "localhost") {
+
+        		serverUrl = "http://localhost";
+
+        	} else {
 
         		serverUrl = "https://www.cocafes.com";
-            //
-        	// }
+
+        	}
 
             var socket = io.connect(serverUrl);
             socket.on('sessionId', function (sessionId) {
