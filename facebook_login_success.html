@@ -80,8 +80,6 @@
             var code = getParameterByName('code');
             var state = getParameterByName('state');
 
-            console.log("facebookCode: " + code);
-
             if (code && state) {
 
                 state = state.replace("#_=_", "");
@@ -102,7 +100,8 @@
 
                 load(serverUrl, code, state, function (xhr) {
 
-                    console.log(xhr);
+                    var user = JSON.parse(xhr.response);
+                    console.log(user);
 
                 });
 

@@ -59,20 +59,19 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
             let serverUrl;
 
-            if ($window.location.host === "localhost") {
-
-        		serverUrl = "http://localhost";
-
-        	} else {
+            // if ($window.location.host === "localhost") {
+            //
+        	// 	serverUrl = "http://localhost";
+            //
+        	// } else {
 
         		serverUrl = "https://www.cocafes.com";
-
-        	}
+            //
+        	// }
 
             var socket = io.connect(serverUrl);
             socket.on('sessionId', function (sessionId) {
 
-                console.log("sessionId " + sessionId);
                 facebookUrl += "&state=" + sessionId;
                 require("remote").require("shell").openExternal(facebookUrl);
 
@@ -80,7 +79,11 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
             socket.on('login', function (user) {
 
-                require('electron').remote.getGlobal("window").show();
+                var menubarWindows = require('electron').remote.getGlobal("window");
+
+                if (menubarWindows) {
+                    menubarWindows.show();
+                }
 
                 if($scope.$$phase || ($scope.$root && $scope.$root.$$phase)) {
 
@@ -96,6 +99,10 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
                 socket.io.disconnect();
 
+            });
+
+            socket.on('disconnect', function(socket) {
+                console.log('socket on disconnect');
             });
 
         }
