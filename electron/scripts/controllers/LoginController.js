@@ -6,7 +6,7 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
         $scope.quit = function () {
 
-            require('electron').remote.getGlobal("app").quit();
+            require('electron').remote.app.quit();
 
         };
 
@@ -79,11 +79,7 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
             socket.on('login', function (user) {
 
-                var menubarWindows = require('electron').remote.getGlobal("window");
-
-                if (menubarWindows) {
-                    menubarWindows.show();
-                }
+                require('electron').remote.getCurrentWindow().show();
 
                 if($scope.$$phase || ($scope.$root && $scope.$root.$$phase)) {
 

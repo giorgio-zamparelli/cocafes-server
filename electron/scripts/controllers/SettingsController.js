@@ -23,7 +23,7 @@ app.controller('SettingsController', [ '$rootScope', '$scope', '$location', 'Api
 
         $scope.quit = function () {
 
-            require('electron').remote.getGlobal("app").quit();
+            require('electron').remote.app.quit();
 
         };
 
