@@ -383,7 +383,7 @@ swagger.addPost({
 
     'spec': {
         path : "/api/v1/authentication/login/facebook",
-        nickname : "users"
+        nickname : "loginWithFacebook"
     },
     'action': function(request, response, next) {
 
@@ -405,7 +405,28 @@ swagger.addPost({
 
                             if (user) {
 
-                                response.json(user);
+                                let friendsChanged = false;
+
+                                for (let facebookFriend of facebookUser.friends.data) {
+
+                                    if (facebookFriend && facebookFriend.id && facebookFriend.id.length > 0 && !user.friendsIds[facebookFriend.id]) {
+                                        user.friendsIds[facebookFriend.id] = true;
+                                        friendsChanged = true;
+                                    }
+
+                                }
+
+                                if (friendsChanged) {
+
+                                    userStorage.addOrUpdateUser(user, function(user) {
+
+                                        response.json(user);
+
+                                    });
+
+                                } else {
+                                    response.json(user);
+                                }
 
                             } else {
 
@@ -594,6 +615,54 @@ swagger.addGet({
             }
 
         });
+
+    }
+
+});
+
+swagger.addGet({
+
+    'spec': {
+        path : "/api/v1/ip",
+        nickname : "getIp"
+    },
+    'action': function(request, response, next) {
+
+        let html = "";
+
+        let ip;
+
+        // Amazon EC2 / Heroku workaround to get real client IP
+        var forwardedIpsStr = request.header('x-forwarded-for');
+
+
+
+        if (forwardedIpsStr) {
+
+            html += "forwardedIpsStr " + JSON.stringify(forwardedIpsStr);
+
+            // 'x-forwarded-for' header may return multiple IP addresses in  the format: "client IP, proxy 1 IP, proxy 2 IP" so take the the first one
+            var forwardedIps = forwardedIpsStr.split(',');
+            ip = forwardedIps[0];
+
+        } else {
+
+            html += "forwardedIpsStr is null";
+
+        }
+
+        html += "\nrequest.connection.remoteAddress " + request.connection.remoteAddress;
+
+        if (!ip) {
+            // Ensure getting client IP address still works in  development environment
+            ip = request.connection.remoteAddress;
+        }
+
+        if (development === environment && (ip === "::1" || ip === "::ffff:127.0.0.1")) {
+            ip = "118.173.50.88";
+        }
+
+        response.send(html);
 
     }
 
