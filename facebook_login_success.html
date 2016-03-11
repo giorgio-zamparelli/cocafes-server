@@ -9,14 +9,107 @@
 
     <script>
 
+        function load (url, facebookCode, sessionId, callback) {
+
+            var xhr;
+
+            if(typeof XMLHttpRequest !== 'undefined') {
+
+                xhr = new XMLHttpRequest();
+
+            } else {
+
+                var versions = ["MSXML2.XmlHttp.5.0",
+                                "MSXML2.XmlHttp.4.0",
+                                "MSXML2.XmlHttp.3.0",
+                                "MSXML2.XmlHttp.2.0",
+                                "Microsoft.XmlHttp"]
+
+                 for(var i = 0, len = versions.length; i < len; i++) {
+
+                    try {
+                        xhr = new ActiveXObject(versions[i]);
+                        break;
+                    }
+                    catch(e){}
+
+                 }
+
+            }
+
+            xhr.onreadystatechange = ensureReadiness;
+
+            function ensureReadiness() {
+
+                if(xhr.readyState < 4) {
+                    return;
+                }
+
+                if(xhr.status !== 200) {
+                    return;
+                }
+
+                if(xhr.readyState === 4) {
+                    callback(xhr);
+                }
+
+            }
+
+
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader("Authorization", "Facebook " + facebookCode);
+            xhr.setRequestHeader("SessionId", sessionId);
+            xhr.send('');
+
+        }
+
+        function getParameterByName(name, url) {
+
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
 
-            if (typeof window.opener !== "undefined") {
+            var code = getParameterByName('code');
+            var state = getParameterByName('state');
+
+            console.log("facebookCode: " + code);
+
+            if (code && state) {
+
+                state = state.replace("#_=_", "");
+
+                var serverUrl;
+
+                if (window.location.host === "localhost") {
+
+            		serverUrl = "http://localhost";
+
+            	} else {
+
+            		serverUrl = "https://www.cocafes.com";
+
+            	}
+
+                serverUrl +="/api/v1/authentication/login/facebook";
+
+                load(serverUrl, code, state, function (xhr) {
+
+                    console.log(xhr);
+
+                });
+
+            } else if (typeof window.opener !== "undefined") {
 
                 window.opener.onFacebookLoginSuccess(window.location.href);
                 window.close();
-
-
 
             } else {
 

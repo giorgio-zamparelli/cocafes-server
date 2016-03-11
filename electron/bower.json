@@ -21,6 +21,7 @@
     "angular-route": "^1.4.9",
     "rxjs": "^4.0.7",
     "moment": "^2.11.2",
-    "material-design-icons": "^2.2.0"
+    "material-design-icons": "^2.2.0",
+    "socket.io-client": "^1.4.5"
   }
 }

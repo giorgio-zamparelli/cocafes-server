@@ -12,6 +12,7 @@ const mongojs = require('mongojs');
 const swagger_node_express = require("swagger-node-express");
 const bodyParser = require( 'body-parser' );
 const Facebook = require('./facebook.js');
+const UUID = require('./UUID.js');
 const CheckinStorage = require('./checkin-storage.js');
 const UserStorage = require('./user-storage.js');
 const VenueStorage = require('./venue-storage.js');
@@ -60,6 +61,7 @@ const dependencies = [
     "bower_components/angular-route/angular-route.js",
     "bower_components/moment/moment.js",
     "bower_components/rxjs/dist/rx.all.js",
+    "bower_components/socket.io-client/socket.io.js",
 
     "scripts/app.js",
 
@@ -377,8 +379,6 @@ app.set('port', (process.env.PORT || 3000));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-//Swagger https://github.com/swagger-api/swagger-node/issues/189
-
 swagger.addPost({
 
     'spec': {
@@ -388,6 +388,19 @@ swagger.addPost({
     'action': function(request, response, next) {
 
         var facebookCode = request.headers.authorization.replace("Facebook ", "");
+        var sessionId = request.headers.sessionid;
+
+        function sendUser (user) {
+
+            if (sessionId && sockets[sessionId]) {
+
+                sockets[sessionId].emit('login', user);
+
+            }
+
+            response.json(user);
+
+        }
 
         facebook.getAccessToken(facebookCode).subscribe(function(accessTokenResponse) {
 
@@ -420,12 +433,14 @@ swagger.addPost({
 
                                     userStorage.addOrUpdateUser(user, function(user) {
 
-                                        response.json(user);
+                                        sendUser(user);
 
                                     });
 
                                 } else {
-                                    response.json(user);
+
+                                    sendUser(user);
+
                                 }
 
                             } else {
@@ -470,7 +485,7 @@ swagger.addPost({
 
                                 userStorage.addOrUpdateUser(user, function(user) {
 
-                                    response.json(user);
+                                    sendUser(user);
 
                                 });
 
@@ -925,22 +940,20 @@ let onStartServer = function () {
 
 };
 
-let server;
+let server = http.createServer(app);
+let socketio = require('socket.io')(server);
+server.listen(app.get('port'), onStartServer);
 
-// if (development === environment) {
+let sockets = {};
 
-    server = http.createServer(app).listen(app.get('port'), onStartServer);
+socketio.on('connection', function (socket) {
 
-// } else {
-//
-//     let options = {
-//
-//         key: fileSystem.readFileSync('./ssl/server.key'),
-//         certificate: fileSystem.readFileSync('./ssl/www.cocafes.com.crt'),
-//         ca: [fileSystem.readFileSync('./ssl/gd_bundle-g2-g1.crt')]
-//
-//     };
-//
-//     server = https.createServer(options, app).listen(app.get('port'), onStartServer);
-//
-// }
+    let sessionId = UUID.generate();
+    sockets[sessionId] = socket;
+    socket.emit('sessionId', sessionId);
+
+    socket.on('disconnect', function (data) {
+        sockets[sessionId] = undefined;
+    });
+
+});

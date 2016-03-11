@@ -80,6 +80,8 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 
 		        		success(function(friends, status, headers, config) {
 
+							cache.friends = {};
+
 							for (var i = 0; i < friends.length; i++) {
 								var friend = friends[i];
 								cache.friends[friend._id] = friend;
@@ -163,6 +165,8 @@ app.service('Api', [ '$http', '$window', function($http, $window){
 					$http({method: 'GET', url: baseUrl + '/venues', params: location}).
 
 		        		success(function(venues, status, headers, config) {
+
+							cache.venues = {};
 
 							for (var i = 0; i < venues.length; i++) {
 								var venue = venues[i];

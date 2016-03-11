@@ -20,101 +20,84 @@ app.controller('LoginController', [ '$rootScope', '$scope', '$location', '$windo
 
         } else {
 
-            loginInCocafesServer();
+            Api.loginWithFacebook($scope.code, function success(user) {
+
+                onLoggedIn(user)
+
+            }, function failure() {
+
+
+
+            });
 
         }
 
     };
 
-    var loginInCocafesServer = function () {
+    var onLoggedIn = function (user) {
 
-        Api.loginWithFacebook($scope.code, function success(user) {
+        SessionManager.storeNewSession(user);
 
-            SessionManager.storeNewSession(user);
+        $location.path('/users');
 
-            $location.path('/users');
-
-        }, function failure() {
-
-
-
-        });
-
-    }
+    };
 
     var showFacebookAuthenticationPopup = function () {
 
         var redirect_uri = $window.location.origin + "/facebook_login_success.html";
         var facebookUrl = "https://www.facebook.com/dialog/oauth?client_id=1707859876137335&scope=email,public_profile,user_friends&redirect_uri=" + redirect_uri;
 
-        console.log(facebookUrl);
-
         if (typeof require == "undefined") {
 
             console.log("show Facebook oauth using window.open");
 
-            var facebookWindow = $window.open(  facebookUrl,
-                "",
-                "width=1000, height=670"
-            );
+            var facebookWindow = $window.open(facebookUrl, "", "width=1000, height=670");
 
             facebookWindow.focus();
 
         } else {
 
-            console.log("show Facebook oauth using electron BrowserWindow");
+            let serverUrl;
 
-            var BrowserWindow = require('electron').remote.BrowserWindow;
-            var facebookWindow = new BrowserWindow({ "width": 1000, "height": 670, "show": false, "node-integration": false });
-            facebookWindow.loadURL(facebookUrl);
-            facebookWindow.show();
+            if ($window.location.host === "localhost") {
 
-            facebookWindow.webContents.on('will-navigate', function (event, url) {
+        		serverUrl = "http://localhost";
 
-                //console.log("facebookWindow on will-navigate event");
-                $window.onFacebookLoginSuccess(url, facebookWindow);
+        	} else {
+
+        		serverUrl = "https://www.cocafes.com";
+
+        	}
+
+            var socket = io.connect(serverUrl);
+            socket.on('sessionId', function (sessionId) {
+
+                console.log("sessionId " + sessionId);
+                facebookUrl += "&state=" + sessionId;
+                require("remote").require("shell").openExternal(facebookUrl);
 
             });
 
-            facebookWindow.webContents.on('did-get-redirect-request', function (event, oldUrl, newUrl) {
+            socket.on('login', function (user) {
 
-                //console.log("facebookWindow on did-get-redirect-request event");
-                $window.onFacebookLoginSuccess(newUrl, facebookWindow);
+                require('electron').remote.getGlobal("window").show();
+
+                if($scope.$$phase || ($scope.$root && $scope.$root.$$phase)) {
+
+                    onLoggedIn(user);
+
+        		} else {
+
+        			$scope.$apply(function () {
+                        onLoggedIn(user);
+            		});
+
+        		}
+
+                socket.io.disconnect();
 
             });
 
-            facebookWindow.on('close', function() {
-                facebookWindow = null;
-            }, false);
-
-        }
-
-    };
-
-    $window.onFacebookLoginSuccess = function (url, facebookWindow) {
-
-        var raw_code = /code=([^&]*)/.exec(url) || null;
-        var code = (raw_code && raw_code.length > 1) ? raw_code[1] : null;
-        var error = /\?error=(.+)$/.exec(url);
-
-        if (code || error) {
-
-            $window.focus();
-
-            if (facebookWindow && facebookWindow.destroy) {
-                facebookWindow.destroy();
-            }
-
-        }
-
-        // If there is a code, proceed to get token from github
-        if (code) {
-
-            $scope.code = code;
-            loginInCocafesServer();
-
-        } else if (error) {
-            alert('Oops! Something went wrong and we couldn\'t log you in using Facebook. Please try again.');
         }
 
     };
